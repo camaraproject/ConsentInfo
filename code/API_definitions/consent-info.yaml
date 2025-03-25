@@ -280,7 +280,7 @@ components:
           type: string
           format: url
           description: |
-            URL where the User can provide the necessary Consent. This field is only present when API Consumer requested it and if `consentRequired` is `true` and the `consentStatus` is `PENDING` or `EXPIRED`.
+            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `privacyStatus[*].consentRequired` is `true` and its `privacyStatus[*].consentStatus` is `PENDING` or `EXPIRED`.
           example: 'https://example.org/consent-capture-url'
     PrivacyStatus:
       type: array
