@@ -11,7 +11,7 @@
 
 Sandbox API Repository to describe, develop, document, and test the ConsentInfo API(s) within the Working Group [IdentityAndConsentManagement](https://lf-camaraproject.atlassian.net/wiki/x/ZzDe)
 
-* API Repository wiki page: ... !! TBD
+* API Repository [Wiki page](https://lf-camaraproject.atlassian.net/wiki/x/NICeBQ)
 
 
 ## Scope
