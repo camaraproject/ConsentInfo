@@ -198,7 +198,7 @@ paths:
                         consentRequired: true
                         consentStatus: PENDING
                     captureUrl: 'https://example.org/consent-capture-url'
-                CONSENT_REQUIRED_MULTIPLES_SCOPES_MULTIPLE_CONSENTS_ONE_API:
+                MULTIPLES_SCOPES_ONE_API_DIFFERENT_CONSENT_STATUS:
                   summary: Multiple scopes for one API with different consentStatus
                   description: |
                     Request with multiple scopes corresponding to one API. Different Consent status for each scope.
