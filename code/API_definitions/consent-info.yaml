@@ -201,7 +201,7 @@ paths:
                 CONSENT_REQUIRED_MULTIPLES_SCOPES_MULTIPLE_CONSENTS_ONE_API:
                   summary: Multiple scopes for one API with different consentStatus
                   description: |
-                    Consent is required for the requested scope(s) and Purpose but it is not provided by the User. Request with multiple scopes corresponding to one API.
+                    Request with multiple scopes corresponding to one API. Different Consent status for each scope.
                   value:
                     privacyStatus:
                       - scopes:
