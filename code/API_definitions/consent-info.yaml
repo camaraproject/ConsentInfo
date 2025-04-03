@@ -3,17 +3,14 @@ info:
   title: Consent Info API
   description: |
     
-    The Consent Info API enables to verify the Consent status of a specific User to the API Consumer for the requested scope(s) and Purpose. When the Consent is required for the requested scope(s) and Purpose, but has not been provided by the User, the API also offers a mechanism for the API Consumer to request Consent from the User.
+    The Consent Info API allows the API Consumer to verify the Consent status of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
 
     # Introduction
-
-    **TBC**
 
     # Relevant terms and definitions
 
     * **Consent**: An explicit opt-in action that the User takes to allow processing of Personal Data. Consent grants the API Consumer access to a set of scopes related to the User for a specific Purpose.
     * **Purpose**: The reason for which Personal Data will be processed by an API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended Personal Data processing.
-    * **TBC**: TBC
 
     # API Functionality
 
@@ -26,8 +23,6 @@ info:
     * Offers a Consent Capture URL: If the user has not provided the necessary Consent, the API supplies an API Provider's Consent capture URL where the user can easily complete the Consent process.
     
     Importantly, this API does NOT delegate consent capture to the API Consumer but rather empowers the API Consumer to present the API Providers's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
-
-    **TBC**
 
     # Authorization and authentication
 
