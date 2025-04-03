@@ -198,6 +198,22 @@ paths:
                         consentRequired: true
                         consentStatus: PENDING
                     captureUrl: 'https://example.org/consent-capture-url'
+                CONSENT_REQUIRED_MULTIPLES_SCOPES_MULTIPLE_CONSENTS_ONE_API:
+                  summary: Multiple scopes for one API with different consentStatus
+                  description: |
+                    Consent is required for the requested scope(s) and Purpose but it is not provided by the User. Request with multiple scopes corresponding to one API.
+                  value:
+                    privacyStatus:
+                      - scopes:
+                          - "sim-swap:check"
+                        purpose: "dpv:FraudPreventionAndDetection"
+                        consentRequired: false
+                      - scopes:
+                          - "sim-swap:retrieve-date"
+                        purpose: "dpv:FraudPreventionAndDetection"
+                        consentRequired: true
+                        consentStatus: PENDING
+                    captureUrl: 'https://example.org/consent-capture-url'
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
