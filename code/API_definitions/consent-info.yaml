@@ -306,7 +306,6 @@ components:
         - scopes
         - purpose
         - consentRequired
-        - consentStatus
       properties:
         scopes:
           $ref: "#/components/schemas/Scopes"
