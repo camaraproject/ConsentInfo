@@ -140,7 +140,7 @@ paths:
                     privacyStatus:
                       - scopes:
                           - "number-verification:verify"
-                        purpose: "dpv:LegitimateInterest"
+                        purpose: "dpv:FraudPreventionAndDetection"
                         consentRequired: false
                 CONSENT_REQUIRED_ACTIVE:
                   summary: Consent is required and active
