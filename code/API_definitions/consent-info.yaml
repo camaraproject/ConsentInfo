@@ -7,7 +7,7 @@ info:
 
     # Introduction
 
-    The primary function of this API is to enable API Consumers to ascertain a User's consent preferences before attempting to access or process their personal data via other APIs. By providing a standardized way to check consent, this API facilitates compliance with privacy regulations and promotes transparency with the User. Key inputs include the specific scope(s) of access being requested, the purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the current consent status, the applicable legal basis for data processing, and, if appropriate and requested, a URL for the User to manage their consent.
+    The primary function of this API is to enable API Consumers to ascertain a User's consent preferences before attempting to access or process their personal data via other APIs. By providing a standardized way to check consent, this API facilitates compliance with privacy regulations and promotes transparency with users. Key inputs include the specific scope(s) of access being requested, the purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the current consent status, the applicable legal basis for data processing, and, if appropriate and requested, a URL for the User to manage their consent.
 
     # Relevant terms and definitions
 
