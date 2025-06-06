@@ -3,26 +3,30 @@ info:
   title: Consent Info API
   description: |
 
-    The Consent Info API allows the API Consumer to verify the Consent status of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
+    The Consent Info API allows an API Consumer to verify the consent status of a particular User for that API Consumer (identified by `client_id` from the access token) concerning requested scope(s) and a specific Purpose. It helps determine if consent is legally required for these parameters. If consent is necessary but not yet granted, or if it has expired, the API can provide a URL pointing to the API Provider's consent capture channel. This enables the API Consumer to direct the User to grant or renew consent in a secure and trusted environment.
 
     # Introduction
+
+    The primary function of this API is to enable API Consumers to ascertain a User's consent preferences before attempting to access or process their personal data via other APIs. By providing a standardized way to check consent, this API facilitates compliance with privacy regulations and promotes transparency with the User. Key inputs include the specific scope(s) of access being requested, the purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the current consent status, the applicable legal basis for data processing, and, if appropriate and requested, a URL for the User to manage their consent.
 
     # Relevant terms and definitions
 
     * **Consent**: An explicit opt-in action that the User takes to allow processing of Personal Data. Consent grants the API Consumer access to a set of scopes related to the User for a specific Purpose.
     * **Purpose**: The reason for which Personal Data will be processed by an API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended Personal Data processing.
+    * **Scope**: A string representing the specific access rights or actions an API Consumer requests from the User for their data (e.g., "location-verification:verify"). A request can contain multiple scopes.
+    * **Legal Basis**: The justification under data protection law for processing personal data. This API uses terms from the W3C Data Privacy Vocabulary (DPV), such as `dpv:Consent`, `dpv:LegitimateInterest`, `dpv:Contract`, etc., to indicate the relevant legal ground.
 
     # API Functionality
 
-    This API enables an API Consumer to determine whether user Consent is required, in the applicable legislation, for the requested actions based on the provide scope(s) and Purpose. NOTE: It may be required more than one User Consent for the requested scope(s) and Purpose (e.g. when the requested scopes are related to multiple APIs).
+    This API enables an API Consumer to determine whether user Consent (or another valid legal basis) is in place for the requested actions, based on the provided scope(s) and Purpose, and for the specific API Consumer making the request. NOTE: The response may contain multiple `consentInfo` array items, for instance, if the requested scopes pertain to different underlying services or require distinct legal assessments (e.g., some scopes rely on `dpv:Consent` while others rely on `dpv:LegitimateInterest`).
 
     Specifically, the API:
 
-    * Determines the need for Consent: Evaluates whether user Consent is necessary according to the specified parameters and relevant legal requirements.
-    * Provides the current Consent status: If Consent is required, the API returns the current status (e.g., active, revoked, expired...) so the API Consumer can understand the current User's consent status.
-    * Offers a Consent Capture URL: If the user has not provided the necessary Consent, the API supplies an API Provider's Consent capture URL where the user can easily complete the Consent process.
+    * Determines the need for Consent or other Legal Basis: Evaluates whether user consent or another legal justification is necessary according to the specified parameters (scopes, Purpose, API Consumer) and relevant legal requirements.
+    * Provides the current Consent status and Legal Basis: If a legal basis is required, the API returns its current status (e.g., `READY`, `PENDING`, `REVOKED`, `EXPIRED`) and the specific type of `legalBasis` (e.g., `dpv:Consent`, `dpv:LegitimateInterest`).
+    * Offers a Consent Capture URL: If the API Consumer sets `requestCaptureUrl` to `true` in the request, and if the user needs to provide or renew consent (e.g., the status is `PENDING` or `EXPIRED` for a `dpv:Consent` legal basis), the API supplies the API Provider's consent capture URL.
 
-    Importantly, this API does NOT delegate consent capture to the API Consumer but rather empowers the API Consumer to present the API Providers's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
+    Importantly, this API does NOT delegate consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's consent capture URL at the most opportune time and place. The actual consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 
     # Authorization and authentication
 
@@ -132,45 +136,69 @@ paths:
               schema:
                 $ref: "#/components/schemas/VerifyConsentStatusResponseBody"
               examples:
-                CONSENT_NOT_REQUIRED:
-                  summary: Consent is not required
+                READY_FOR_PROCESSING:
+                  summary: Ready for processing
                   description: |
-                    Consent is not required for the requested scope(s) and Purpose
+                    Data processing is allowed for the requested scope(s) and Purpose.
                   value:
-                    privacyStatus:
+                    consentInfo:
                       - scopes:
                           - "number-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: false
-                CONSENT_REQUIRED_ACTIVE:
-                  summary: Consent is required and active
+                        legalBasis: "dpv:LegitimateInterest"
+                        status: READY
+                CONSENT_REQUIRED:
+                  summary: Consent is required
                   description: |
-                    Consent is required for the requested scope(s) and Purpose and it is provided by the User
+                    Consent is required for the requested scope(s) and Purpose
                   value:
-                    privacyStatus:
+                    consentInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: true
-                        consentStatus: ACTIVE
+                        legalBasis: "dpv:Consent"
+                        status: PENDING
                 CONSENT_REQUIRED_CAPTURE_URL:
-                  summary: Consent is required and capture URL provided
+                  summary: Consent is required and capture URL is provided
                   description: |
-                    Consent is required for the requested scope(s) and Purpose but it is not provided by the User.
+                    Consent is required for the requested scope(s) and Purpose but it is not provided by the User. The API Provider provides a Consent capture URL.
                   value:
-                    privacyStatus:
+                    consentInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: true
-                        consentStatus: PENDING
+                        legalBasis: "dpv:Consent"
+                        status: EXPIRED
+                        expirationDate: '2023-07-03T14:27:08.312+02:00'
                     captureUrl: 'https://example.org/consent-capture-url'
-                CONSENT_REQUIRED_MULTIPLE_SCOPES_ONE_API:
+                CONSENT_REVOKED:
+                  summary: Consent is revoked
+                  description: |
+                    Consent is revoked for the requested scope(s) and Purpose.
+                  value:
+                    consentInfo:
+                      - scopes:
+                          - "location-verification:verify"
+                        purpose: "dpv:FraudPreventionAndDetection"
+                        legalBasis: "dpv:Consent"
+                        status: REVOKED
+                LEGITIMATE_INTEREST_OPT_OUT:
+                  summary: Legitimate interest opt-out
+                  description: |
+                    The User has opted out of the legitimate interest for the requested scope(s) and Purpose.
+                  value:
+                    consentInfo:
+                      - scopes:
+                          - "number-verification:verify"
+                        purpose: "dpv:FraudPreventionAndDetection"
+                        legalBasis: "dpv:LegitimateInterest"
+                        status: REVOKED
+                MULTIPLE_SCOPES_ONE_API:
                   summary: Multiple scopes for one API
                   description: |
-                    Consent is required for the requested scope(s) and Purpose but it is not provided by the User. Request with multiple scopes corresponding to one API.
+                    Request with multiple scopes corresponding to one API.
                   value:
-                    privacyStatus:
+                    consentInfo:
                       - scopes:
                           - "quality-on-demand:sessions:create"
                           - "quality-on-demand:sessions:read"
@@ -178,42 +206,41 @@ paths:
                           - "quality-on-demand:sessions:delete"
                           - "quality-on-demand:sessions:retrieve-by-device"
                         purpose: "dpv:RequestedServiceProvision"
-                        consentRequired: true
-                        consentStatus: PENDING
-                    captureUrl: 'https://example.org/consent-capture-url'
-                CONSENT_REQUIRED_MULTIPLE_SCOPES_MULTIPLE_APIS:
+                        legalBasis: "dpv:Contract"
+                        status: READY
+                MULTIPLE_SCOPES_MULTIPLE_APIS:
                   summary: Multiple scopes for multiple APIs
                   description: |
-                    Consent is required for the requested scope(s) and Purpose but it is not provided by the User. Request with multiple scopes corresponding to multiple APIs.
+                    Request with multiple scopes corresponding to multiple APIs.
                   value:
-                    privacyStatus:
+                    consentInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: true
-                        consentStatus: PENDING
+                        legalBasis: "dpv: Consent"
+                        status: PENDING
                       - scopes:
                           - "device-roaming-status:read"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: true
-                        consentStatus: PENDING
+                        legalBasis: "dpv:Consent"
+                        status: PENDING
                     captureUrl: 'https://example.org/consent-capture-url'
-                MULTIPLES_SCOPES_ONE_API_DIFFERENT_CONSENT_STATUS:
-                  summary: Multiple scopes for one API with different consentStatus
+                MULTIPLES_SCOPES_ONE_API_DIFFERENT_STATUS:
+                  summary: Multiple scopes for one API with different status
                   description: |
-                    Request with multiple scopes corresponding to one API. Different Consent status for each scope.
+                    Request with multiple scopes corresponding to one API. Different status for each scope.
                   value:
-                    privacyStatus:
+                    consentInfo:
                       - scopes:
                           - "sim-swap:check"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: false
+                        legalBasis: "dpv:LegitimateInterest"
+                        status: READY
                       - scopes:
                           - "sim-swap:retrieve-date"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        consentRequired: true
-                        consentStatus: PENDING
-                    captureUrl: 'https://example.org/consent-capture-url'
+                        legalBasis: "dpv:LegitimateInterest"
+                        status: REVOKED
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -272,7 +299,7 @@ components:
       items:
         type: string
       description: |
-        List of scopes for which the Consent status is requested. The scope is a string that represents the access rights that the API Consumer is requesting from the User.
+        List of requested scopes. The scope is a string that represents the access rights that the API Consumer is requesting from the User.
       example:
         - "location-verification:verify"
     Purpose:
@@ -283,52 +310,72 @@ components:
     VerifyConsentStatusResponseBody:
       type: object
       required:
-        - privacyStatus
+        - consentInfo
       properties:
-        privacyStatus:
-          $ref: "#/components/schemas/PrivacyStatus"
+        consentInfo:
+          $ref: "#/components/schemas/consentInfo"
         captureUrl:
           type: string
           format: url
           description: |
-            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `privacyStatus[*].consentRequired` is `true` and its `privacyStatus[*].consentStatus` is `PENDING` or `EXPIRED`.
+            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `consentInfo[*].legalBasis` is `dpv:Consent` and its `consentInfo[*].status` is `PENDING` or `EXPIRED`.
           example: 'https://example.org/consent-capture-url'
-    PrivacyStatus:
+    consentInfo:
       type: array
       description: |
-        The PrivacyStatus contains the information about the Consent status for the requested scope(s) and Purpose. It may be required more than one User Consent for the requested scope(s) and Purpose (e.g. when the requested scopes are related to multiple APIs).
+        The consentInfo contains the information about the Consent status for the requested scope(s) and Purpose. It may be required more than one array item for the requested scope(s) and Purpose, e.g. when the requested scopes are related to multiple APIs.
       items:
-        $ref: "#/components/schemas/PrivacyStatusObject"
+        $ref: "#/components/schemas/consentInfoObject"
       minItems: 1
-    PrivacyStatusObject:
+    consentInfoObject:
       type: object
       required:
         - scopes
         - purpose
-        - consentRequired
+        - legalBasis
+        - status
       properties:
         scopes:
           $ref: "#/components/schemas/Scopes"
         purpose:
           $ref: "#/components/schemas/Purpose"
-        consentRequired:
-          type: boolean
+        legalBasis:
+          type: string
           description: |
-            * `true` - The Consent is required for the requested scope(s) and Purpose.
-            * `false` - The Consent is not required for the requested scope(s) and Purpose.
-        consentStatus:
+              The applicable legal basis for the requested scope(s) and Purpose. It uses terms from the W3C [Data Privacy Vocabulary](https://w3c.github.io/dpv/2.1/) (DPV).
+          enum:
+            - dpv:Consent
+            - dpv:LegitimateInterest
+            - dpv:Contract
+            - dpv:LegalObligation
+            - dpv:PublicInterest
+            - dpv:VitalInterest
+        status:
           type: string
           enum:
             - PENDING
-            - ACTIVE
+            - READY
             - REVOKED
             - EXPIRED
           description: |
-            Consent status. This field is only present if `consentRequired` is `true`, in which case it becomes mandatory.
-            - `PENDING`: The User has not provided the necessary Consent yet.
-            - `ACTIVE`: The User has provided the necessary Consent.
-            - `REVOKED`: The User has revoked the necessary Consent.
-            - `EXPIRED`: The Consent provided by the User has expired.
+              Indicates the current validity of the specified `legalBasis` for processing data related to the requested scope(s) and Purpose.
+              It signals if processing is currently allowed and offers a general indication if it is not, if its validity is time-bound, or if it has ceased.
+              Possible values are:
+              - `PENDING`: The specified `legalBasis` is not yet established or fully validated for the requested data processing.
+                           For example, the user has not yet provided Consent under `dpv:Consent` legal basis.
+              - `READY`: The specified `legalBasis` is currently valid and permits the requested data processing.
+                         For example, necessary user Consent has been obtained, a legitimate interests assessment resulted in a positive outcome without overriding objections, or the processing is deemed necessary under an existing contract.
+              - `REVOKED`: Where applicable (primarily for `dpv:Consent` and `dpv:LegitimateInterest`), the user has actively withdrawn their permission, or the previously valid `legalBasis` is no longer considered so due to user action.
+                           This includes revocation of Consent or a successful objection (opt-out) to processing based on legitimate interest.
+              - `EXPIRED`: Where applicable, the validity of the `legalBasis` for data processing has ceased due to the passage of time or a pre-defined condition.
+                           This is common for time-limited Consents or could apply to other bases if their applicability was time-bound.
+        expirationDate:
+          type: string
+          format: date-time
+          description: |
+             The date and time at which the validity of this `legalBasis` is set to expire or has expired.
+             It applies mainly to time-limited legal bases, such as `dpv:Consent`, or others where a specific duration of validity is defined. This field is only present if `status` is `READY` (indicating a future expiration if applicable) or `EXPIRED` (indicating the past expiration date). It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+          example: '2023-07-03T14:27:08.312+02:00'
     ErrorInfo:
       type: object
       required:
