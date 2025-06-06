@@ -217,7 +217,7 @@ paths:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
-                        legalBasis: "dpv: Consent"
+                        legalBasis: "dpv:Consent"
                         status: PENDING
                       - scopes:
                           - "device-roaming-status:read"
@@ -275,6 +275,8 @@ components:
       example: "+123456789"
     VerifyConsentStatusRequestBody:
       type: object
+      description: |
+        The request body for the Consent status verification request. It contains the requested scope(s), the Purpose for which the API Consumer intends to process the User's Personal Data, a flag indicating whether the API Consumer requests a Consent capture URL and optionally the phone number of the User. The phone number is required when the API is invoked using a two-legged access token, but MUST NOT be provided when a three-legged access token is used, as the subject will be uniquely identified from the access token.
       required:
         - scopes
         - purpose
