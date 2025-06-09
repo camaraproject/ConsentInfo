@@ -3,11 +3,11 @@ info:
   title: Consent Info API
   description: |
 
-    The Consent Info API allows an API Consumer to verify the consent status of a particular User for that API Consumer (identified by `client_id` from the access token) concerning requested scope(s) and a specific Purpose. It helps determine if consent is legally required for these parameters. If consent is necessary but not yet granted, or if it has expired, the API can provide a URL pointing to the API Provider's consent capture channel. This enables the API Consumer to direct the User to grant or renew consent in a secure and trusted environment.
+    The Consent Info API allows an API Consumer to verify the Consent status of a particular User for that API Consumer (identified by `client_id` from the access token) concerning requested scope(s) and a specific Purpose. It helps determine if Consent is legally required for these parameters. If Consent is necessary but not yet granted, or if it has expired, the API can provide a URL pointing to the API Provider's Consent capture channel. This enables the API Consumer to direct the User to grant or renew Consent in a secure and trusted environment.
 
     # Introduction
 
-    The primary function of this API is to enable API Consumers to ascertain a User's consent preferences before attempting to access or process their personal data via other APIs. By providing a standardized way to check consent, this API facilitates compliance with privacy regulations and promotes transparency with users. Key inputs include the specific scope(s) of access being requested, the purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the current consent status, the applicable legal basis for data processing, and, if appropriate and requested, a URL for the User to manage their consent.
+    The primary function of this API is to enable API Consumers to ascertain a User's Consent preferences before attempting to access or process their personal data via other APIs. By providing a standardized way to check Consent, this API facilitates compliance with privacy regulations and promotes transparency with users. Key inputs include the specific scope(s) of access being requested, the purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the current Consent status, the applicable legal basis for data processing, and, if appropriate and requested, a URL for the User to manage their Consent.
 
     # Relevant terms and definitions
 
@@ -22,11 +22,11 @@ info:
 
     Specifically, the API:
 
-    * Determines the need for Consent or other Legal Basis: Evaluates whether user consent or another legal justification is necessary according to the specified parameters (scopes, Purpose, API Consumer) and relevant legal requirements.
+    * Determines the need for Consent or other Legal Basis: Evaluates whether user Consent or another legal justification is necessary according to the specified parameters (scopes, Purpose, API Consumer) and relevant legal requirements.
     * Provides the current Consent status and Legal Basis: If a legal basis is required, the API returns its current status (e.g., `READY`, `PENDING`, `REVOKED`, `EXPIRED`) and the specific type of `legalBasis` (e.g., `dpv:Consent`, `dpv:LegitimateInterest`).
-    * Offers a Consent Capture URL: If the API Consumer sets `requestCaptureUrl` to `true` in the request, and if the user needs to provide or renew consent (e.g., the status is `PENDING` or `EXPIRED` for a `dpv:Consent` legal basis), the API supplies the API Provider's consent capture URL.
+    * Offers a Consent Capture URL: If the API Consumer sets `requestCaptureUrl` to `true` in the request, and if the user needs to provide or renew Consent (e.g., the status is `PENDING` or `EXPIRED` for a `dpv:Consent` legal basis), the API supplies the API Provider's Consent capture URL.
 
-    Importantly, this API does NOT delegate consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's consent capture URL at the most opportune time and place. The actual consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
+    Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 
     # Authorization and authentication
 
@@ -293,7 +293,7 @@ components:
           description: |
             A boolean flag indicating whether the API Consumer requests API Provider to return a Consent capture URL.
             * `true` - If set to `true` the API will include a `captureUrl` in the response body if applicable.
-            * `false` - The API will omit the consent capture URL from the response.
+            * `false` - The API will omit the Consent capture URL from the response.
           example: true
     Scopes:
       type: array
@@ -360,7 +360,7 @@ components:
             - REVOKED
             - EXPIRED
           description: |
-              Indicates the current validity of the specified `legalBasis` for processing data related to the requested scope(s) and Purpose.
+              Shows the current validity of the specified `legalBasis` for processing data related to the indicated scope(s) and Purpose.
               It signals if processing is currently allowed and offers a general indication if it is not, if its validity is time-bound, or if it has ceased.
               Possible values are:
               - `PENDING`: The specified `legalBasis` is not yet established or fully validated for the requested data processing.
