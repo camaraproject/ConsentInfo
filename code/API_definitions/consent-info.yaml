@@ -20,7 +20,7 @@ info:
 
     # API Functionality
 
-    This API enables an API Consumer to determine whether user Consent (or another valid Legal Basis) is in place for the requested actions, based on the provided scope(s) and Purpose, and for the specific API Consumer making the request. NOTE: The response may contain multiple `consentInfo` array items, for instance, if the requested scopes pertain to different underlying services or require distinct legal assessments (e.g., some scopes rely on `dpv:Consent` while others rely on `dpv:LegitimateInterest`).
+    This API enables an API Consumer to determine whether user Consent (or another valid Legal Basis) is in place for the requested actions, based on the provided scope(s) and Purpose, and for the specific API Consumer making the request. NOTE: The response may contain multiple array items, for instance, if the requested scopes pertain to different underlying services or require distinct legal assessments (e.g., some scopes rely on `dpv:Consent` while others rely on `dpv:LegitimateInterest`).
 
     Specifically, the API:
 
@@ -143,7 +143,7 @@ paths:
                   description: |
                     Data processing is allowed for the requested scope(s) and Purpose.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "number-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -154,7 +154,7 @@ paths:
                   description: |
                     Consent is required for the requested scope(s) and Purpose
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -166,7 +166,7 @@ paths:
                   description: |
                     Consent is required for the requested scope(s) and Purpose but it is not provided by the User. The API Provider provides a Consent capture URL.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -180,7 +180,7 @@ paths:
                   description: |
                     Consent is revoked for the requested scope(s) and Purpose.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -192,7 +192,7 @@ paths:
                   description: |
                     The User has opted out of the legitimate interest for the requested scope(s) and Purpose.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "number-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -204,7 +204,7 @@ paths:
                   description: |
                     Request with multiple scopes corresponding to one API.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "quality-on-demand:sessions:create"
                           - "quality-on-demand:sessions:read"
@@ -219,7 +219,7 @@ paths:
                   description: |
                     Request with multiple scopes corresponding to multiple APIs.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -238,7 +238,7 @@ paths:
                   description: |
                     Request with multiple scopes corresponding to one API. Different status for each scope.
                   value:
-                    consentInfo:
+                    statusInfo:
                       - scopes:
                           - "sim-swap:check"
                         purpose: "dpv:FraudPreventionAndDetection"
@@ -321,17 +321,17 @@ components:
     VerifyConsentStatusResponseBody:
       type: object
       required:
-        - consentInfo
+        - statusInfo
       properties:
-        consentInfo:
-          $ref: "#/components/schemas/consentInfo"
+        statusInfo:
+          $ref: "#/components/schemas/statusInfo"
         captureUrl:
           type: string
           format: url
           description: |
-            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `consentInfo[*].legalBasis` is `dpv:Consent`, `consentInfo[*].statusValidForProcessing` is `false`, and `consentInfo[*].statusReason` is `PENDING` or `EXPIRED`.
+            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `statusInfo[*].legalBasis` is `dpv:Consent`, `statusInfo[*].statusValidForProcessing` is `false`, and `statusInfo[*].statusReason` is `PENDING` or `EXPIRED`.
           example: 'https://example.org/consent-capture-url'
-    consentInfo:
+    statusInfo:
       type: array
       description: |
         Provides information about the data processing validity status for the requested scope(s) and Purpose. It contains details about the applicable Legal Basis, whether it is currently valid for processing data, and if not, the reason why it is not valid. This information helps API Consumers understand the current state of Consent or other Leal Basis for processing data.
