@@ -5,26 +5,28 @@ info:
 
     The Consent Info API allows an API Consumer to verify the Consent status of a particular User for that API Consumer (identified by `client_id` from the access token) concerning requested scope(s) and a specific Purpose. It helps determine if Consent is legally required for these parameters. If Consent is necessary but not yet granted, or if it has expired, the API can provide a URL pointing to the API Provider's Consent capture channel. This enables the API Consumer to direct the User to grant or renew Consent in a secure and trusted environment.
 
+    While verifying User Consent is a primary use case, this API allows to check the validity of *any* Legal Basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`, `dpv:Contract`, etc) that authorizes data processing for a given Purpose.
+
     # Introduction
 
-    The primary function of this API is to enable API Consumers to ascertain a User's Consent preferences before attempting to access or process their personal data via other APIs. By providing a standardized way to check Consent, this API facilitates compliance with privacy regulations and promotes transparency with users. Key inputs include the specific scope(s) of access being requested, the purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the current Consent status, the applicable legal basis for data processing, and, if appropriate and requested, a URL for the User to manage their Consent.
+    The primary function of this API is to enable API Consumers to ascertain the authorization status for processing personal data before using other APIs. By providing a standardized way to check the validity of a legal basis, this API facilitates compliance with privacy regulations and promotes transparency with users. Key inputs include the specific scope(s) of access being requested, the Purpose for data processing, and an identifier for the User (either explicitly provided or derived from a three-legged access token). The API responds with the validity status of the applicable Legal Basis, and, if the Legal Basis is `dpv:Consent`, can provide a URL for the User to manage it.
 
     # Relevant terms and definitions
 
     * **Consent**: An explicit opt-in action that the User takes to allow processing of Personal Data. Consent grants the API Consumer access to a set of scopes related to the User for a specific Purpose.
     * **Purpose**: The reason for which Personal Data will be processed by an API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended Personal Data processing.
     * **Scope**: A string representing the specific access rights or actions an API Consumer requests from the User for their data (e.g., "location-verification:verify"). A request can contain multiple scopes.
-    * **Legal Basis**: The justification under data protection law for processing personal data. This API uses terms from the W3C Data Privacy Vocabulary (DPV), such as `dpv:Consent`, `dpv:LegitimateInterest`, `dpv:Contract`, etc., to indicate the relevant legal ground.
+    * **Legal Basis**: The justification under data protection law for processing Personal Data. This API uses terms from the W3C Data Privacy Vocabulary (DPV), such as `dpv:Consent`, `dpv:LegitimateInterest`, `dpv:Contract`, etc., to indicate the relevant legal ground.
 
     # API Functionality
 
-    This API enables an API Consumer to determine whether user Consent (or another valid legal basis) is in place for the requested actions, based on the provided scope(s) and Purpose, and for the specific API Consumer making the request. NOTE: The response may contain multiple `consentInfo` array items, for instance, if the requested scopes pertain to different underlying services or require distinct legal assessments (e.g., some scopes rely on `dpv:Consent` while others rely on `dpv:LegitimateInterest`).
+    This API enables an API Consumer to determine whether user Consent (or another valid Legal Basis) is in place for the requested actions, based on the provided scope(s) and Purpose, and for the specific API Consumer making the request. NOTE: The response may contain multiple `consentInfo` array items, for instance, if the requested scopes pertain to different underlying services or require distinct legal assessments (e.g., some scopes rely on `dpv:Consent` while others rely on `dpv:LegitimateInterest`).
 
     Specifically, the API:
 
-    * Determines the need for Consent or other Legal Basis: Evaluates whether user Consent or another legal justification is necessary according to the specified parameters (scopes, Purpose, API Consumer) and relevant legal requirements.
-    * Provides the current Consent status and Legal Basis: If a legal basis is required, the API returns its current status (e.g., `READY`, `PENDING`, `REVOKED`, `EXPIRED`) and the specific type of `legalBasis` (e.g., `dpv:Consent`, `dpv:LegitimateInterest`).
-    * Offers a Consent Capture URL: If the API Consumer sets `requestCaptureUrl` to `true` in the request, and if the user needs to provide or renew Consent (e.g., the status is `PENDING` or `EXPIRED` for a `dpv:Consent` legal basis), the API supplies the API Provider's Consent capture URL.
+    * Indicates the applicable Legal Basis: Indicates which legal basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`) is required for the requested scopes, Purpose, and API Consumer according to relevant legal frameworks.
+    * Provides the data processing validity status and reason: If a legal basis is required, the API returns `statusValidForProcessing`, a boolean flag that is `true` if processing is permitted. If the flag is `false`, a `statusReason` field (with values like `PENDING`, `REVOKED`, `EXPIRED`) is also returned to explain why.
+    * Offers a Consent Capture URL: This functionality is specific to the `dpv:Consent` legal basis. If the API Consumer sets `requestCaptureUrl` to `true`, and if a user needs to provide or renew their Consent (e.g., the `statusReason` is `PENDING` or `EXPIRED`), the API supplies the API Provider's Consent capture URL.
 
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 
@@ -32,7 +34,7 @@ info:
 
     The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
 
-    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
+    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared Purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
 
     In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
 
@@ -65,20 +67,20 @@ servers:
         default: http://localhost:9091
         description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
 tags:
-  - name: Verify Consent Status
-    description: Create a request to verify the Consent status
+  - name: Verify Status
+    description: Create a request to verify the Consent (or other Legal Basis) status
 paths:
   /verify:
     post:
-      summary: Create a request to verify the Consent status
+      summary: Create a request to verify the Consent (or other Legal Basis) status
       description: |
-        Create a request to verify the Consent status of a specific User to the API Consumer for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+        Create a request to verify the Consent (or other Legal Basis) status of a specific User to the API Consumer for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
       operationId: verifyConsentStatus
       security:
         - openId:
             - consent-info:verify
       tags:
-        - Verify Consent Status
+        - Verify Status
       parameters:
         - $ref: '#/components/parameters/x-correlator'
       requestBody:
@@ -146,7 +148,7 @@ paths:
                           - "number-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:LegitimateInterest"
-                        status: READY
+                        statusValidForProcessing: true
                 CONSENT_REQUIRED:
                   summary: Consent is required
                   description: |
@@ -157,7 +159,8 @@ paths:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:Consent"
-                        status: PENDING
+                        statusValidForProcessing: false
+                        statusReason: PENDING
                 CONSENT_REQUIRED_CAPTURE_URL:
                   summary: Consent is required and capture URL is provided
                   description: |
@@ -168,7 +171,8 @@ paths:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:Consent"
-                        status: EXPIRED
+                        statusValidForProcessing: false
+                        statusReason: EXPIRED
                         expirationDate: '2023-07-03T14:27:08.312+02:00'
                     captureUrl: 'https://example.org/consent-capture-url'
                 CONSENT_REVOKED:
@@ -181,7 +185,8 @@ paths:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:Consent"
-                        status: REVOKED
+                        statusValidForProcessing: false
+                        statusReason: REVOKED
                 LEGITIMATE_INTEREST_OPT_OUT:
                   summary: Legitimate interest opt-out
                   description: |
@@ -192,7 +197,8 @@ paths:
                           - "number-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:LegitimateInterest"
-                        status: REVOKED
+                        statusValidForProcessing: false
+                        statusReason: REVOKED
                 MULTIPLE_SCOPES_ONE_API:
                   summary: Multiple scopes for one API
                   description: |
@@ -207,7 +213,7 @@ paths:
                           - "quality-on-demand:sessions:retrieve-by-device"
                         purpose: "dpv:RequestedServiceProvision"
                         legalBasis: "dpv:Contract"
-                        status: READY
+                        statusValidForProcessing: true
                 MULTIPLE_SCOPES_MULTIPLE_APIS:
                   summary: Multiple scopes for multiple APIs
                   description: |
@@ -218,12 +224,14 @@ paths:
                           - "location-verification:verify"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:Consent"
-                        status: PENDING
+                        statusValidForProcessing: false
+                        statusReason: PENDING
                       - scopes:
                           - "device-roaming-status:read"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:Consent"
-                        status: PENDING
+                        statusValidForProcessing: false
+                        statusReason: PENDING
                     captureUrl: 'https://example.org/consent-capture-url'
                 MULTIPLES_SCOPES_ONE_API_DIFFERENT_STATUS:
                   summary: Multiple scopes for one API with different status
@@ -235,12 +243,13 @@ paths:
                           - "sim-swap:check"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:LegitimateInterest"
-                        status: READY
+                        statusValidForProcessing: true
                       - scopes:
                           - "sim-swap:retrieve-date"
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:LegitimateInterest"
-                        status: REVOKED
+                        statusValidForProcessing: false
+                        statusReason: REVOKED
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -320,12 +329,13 @@ components:
           type: string
           format: url
           description: |
-            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `consentInfo[*].legalBasis` is `dpv:Consent` and its `consentInfo[*].status` is `PENDING` or `EXPIRED`.
+            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `consentInfo[*].legalBasis` is `dpv:Consent`, `consentInfo[*].statusValidForProcessing` is `false`, and `consentInfo[*].statusReason` is `PENDING` or `EXPIRED`.
           example: 'https://example.org/consent-capture-url'
     consentInfo:
       type: array
       description: |
-        The consentInfo contains the information about the Consent status for the requested scope(s) and Purpose. It may be required more than one array item for the requested scope(s) and Purpose, e.g. when the requested scopes are related to multiple APIs.
+        Provides information about the data processing validity status for the requested scope(s) and Purpose. It contains details about the applicable Legal Basis, whether it is currently valid for processing data, and if not, the reason why it is not valid. This information helps API Consumers understand the current state of Consent or other Leal Basis for processing data.
+        It may be required more than one array item for the requested scope(s) and Purpose, e.g. when the requested scopes are related to multiple APIs.
       items:
         $ref: "#/components/schemas/consentInfoObject"
       minItems: 1
@@ -335,7 +345,7 @@ components:
         - scopes
         - purpose
         - legalBasis
-        - status
+        - statusValidForProcessing
       properties:
         scopes:
           $ref: "#/components/schemas/Scopes"
@@ -344,7 +354,7 @@ components:
         legalBasis:
           type: string
           description: |
-              The applicable legal basis for the requested scope(s) and Purpose. It uses terms from the W3C [Data Privacy Vocabulary](https://w3c.github.io/dpv/2.1/) (DPV).
+              The applicable Legal Basis for the requested scope(s) and Purpose. It uses terms from the W3C [Data Privacy Vocabulary](https://w3c.github.io/dpv/2.1/) (DPV).
           enum:
             - dpv:Consent
             - dpv:LegitimateInterest
@@ -352,31 +362,34 @@ components:
             - dpv:LegalObligation
             - dpv:PublicInterest
             - dpv:VitalInterest
-        status:
+        statusValidForProcessing:
+          type: boolean
+          description: |
+              Boolean flag that shows whether the specified Legal Basis is currently valid for processing data related to the indicated scope(s) and Purpose.
+              * `true` - The specified `legalBasis` is currently valid and permits the requested data processing. For example, necessary user Consent has been obtained; a legitimate interests assessment resulted in a positive outcome, with no overriding objections; or the processing is deemed necessary under an existing contract.
+              * `false` - The specified `legalBasis` is not valid for processing the requested scope(s) and Purpose. The reason for this is indicated in the `statusReason` field. This may be because the User has not yet provided Consent, has opted out of processing based on legitimate interest or because the Legal Basis is no longer applicable for other reasons.
+        statusReason:
           type: string
           enum:
             - PENDING
-            - READY
             - REVOKED
             - EXPIRED
           description: |
-              Shows the current validity of the specified `legalBasis` for processing data related to the indicated scope(s) and Purpose.
-              It signals if processing is currently allowed and offers a general indication if it is not, if its validity is time-bound, or if it has ceased.
+              This field must be present if `statusValidForProcessing` is `false`. It indicates the reason why the specified `legalBasis` is not valid for processing the requested scope(s) and Purpose. It provides API consumers with additional context on the current state of the Legal Basis, helping them to understand its applicability and the next steps they may need to take.
+              It is particularly useful for determining whether the API Consumer should prompt the User to take action, such as providing Consent or renewing an existing Consent.
               Possible values are:
               - `PENDING`: The specified `legalBasis` is not yet established or fully validated for the requested data processing.
-                           For example, the user has not yet provided Consent under `dpv:Consent` legal basis.
-              - `READY`: The specified `legalBasis` is currently valid and permits the requested data processing.
-                         For example, necessary user Consent has been obtained, a legitimate interests assessment resulted in a positive outcome without overriding objections, or the processing is deemed necessary under an existing contract.
+                           For example, the user has not yet provided Consent under `dpv:Consent` Legal Basis.
               - `REVOKED`: Where applicable (primarily for `dpv:Consent` and `dpv:LegitimateInterest`), the user has actively withdrawn their permission, or the previously valid `legalBasis` is no longer considered so due to user action.
                            This includes revocation of Consent or a successful objection (opt-out) to processing based on legitimate interest.
               - `EXPIRED`: Where applicable, the validity of the `legalBasis` for data processing has ceased due to the passage of time or a pre-defined condition.
-                           This is common for time-limited Consents or could apply to other bases if their applicability was time-bound.
+                           This is common for time-limited Consents or could apply to other Legal Basis if their applicability was time-bound.
         expirationDate:
           type: string
           format: date-time
           description: |
              The date and time at which the validity of this `legalBasis` is set to expire or has expired.
-             It applies mainly to time-limited legal bases, such as `dpv:Consent`, or others where a specific duration of validity is defined. This field is only present if `status` is `READY` (indicating a future expiration if applicable) or `EXPIRED` (indicating the past expiration date). It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+             It applies mainly to time-limited Legal Basis, such as `dpv:Consent`, or others where a specific duration of validity is defined. This field is only applicable if `statusValidForProcessing` is `true` (indicating a future expiration) or if `statusValidForProcessing` is `false` and `statusReason` is `EXPIRED` (indicating the past expiration date). It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
           example: '2023-07-03T14:27:08.312+02:00'
     ErrorInfo:
       type: object
