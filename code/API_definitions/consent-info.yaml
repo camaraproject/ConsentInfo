@@ -337,9 +337,9 @@ components:
         Provides information about the data processing validity status for the requested scope(s) and Purpose. It contains details about the applicable Legal Basis, whether it is currently valid for processing data, and if not, the reason why it is not valid. This information helps API Consumers understand the current state of Consent or other Leal Basis for processing data.
         It may be required more than one array item for the requested scope(s) and Purpose, e.g. when the requested scopes are related to multiple APIs.
       items:
-        $ref: "#/components/schemas/consentInfoObject"
+        $ref: "#/components/schemas/statusInfoObject"
       minItems: 1
-    consentInfoObject:
+    statusInfoObject:
       type: object
       required:
         - scopes
