@@ -17,7 +17,7 @@ info:
     * **Purpose**: The reason for which Personal Data will be processed by an API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended Personal Data processing.
     * **Scope**: A string representing the specific access rights or actions an API Consumer requests from the User for their data (e.g., "location-verification:verify"). A request can contain multiple scopes.
     * **Legal Basis**: The justification under data protection law for processing Personal Data. It identifies the lawful ground on which the API Consumer relies (e.g., Consent, Contract, Legitimate Interest).
-    
+   
     This API adopts the [W3C Data Privacy Vocabulary](https://w3c.github.io/dpv/2.0/dpv/) (DPV) to represent both Purpose and Legal Basis. For example, Legal Basis include values such as `dpv:Consent` or `dpv:LegitimateInterest`, while Purposes include `dpv:FraudPreventionAndDetection` or `dpv:RequestedServiceProvision`.
 
     # API Functionality
