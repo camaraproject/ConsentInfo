@@ -27,7 +27,7 @@ info:
     Specifically, the API:
 
     * Indicates the applicable Legal Basis: Indicates which legal basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`) is required for the requested scopes, Purpose, and API Consumer according to relevant legal frameworks.
-    * Provides the data processing validity status and reason: If a legal basis is required, the API returns `statusValidForProcessing`, a boolean flag that is `true` if processing is permitted. If the flag is `false`, a `statusReason` field (with values like `PENDING`, `REVOKED`, `EXPIRED`) is also returned to explain why.
+    * Provides the data processing validity status and reason: The API returns `statusValidForProcessing`, a boolean flag that is `true` if processing is permitted. If the flag is `false`, a `statusReason` field is also returned to explain why.
     * Offers a Consent Capture URL: This functionality is specific to the `dpv:Consent` legal basis. If the API Consumer sets `requestCaptureUrl` to `true`, and if a user needs to provide or renew their Consent (e.g., the `statusReason` is `PENDING` or `EXPIRED`), the API supplies the API Provider's Consent capture URL.
 
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
