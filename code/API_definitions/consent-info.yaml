@@ -28,7 +28,7 @@ info:
 
     * Indicates the applicable Legal Basis: Indicates which legal basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`) is required for the requested scopes, Purpose, and API Consumer according to relevant legal frameworks.
     * Provides the data processing validity status and reason: The API returns `statusValidForProcessing`, a boolean flag that is `true` if processing is permitted. If the flag is `false`, a `statusReason` field is also returned to explain why.
-    * Offers a Consent Capture URL: This functionality is specific to the `dpv:Consent` legal basis. If the API Consumer sets `requestCaptureUrl` to `true`, and if a user needs to provide or renew their Consent (e.g., the `statusReason` is `PENDING` or `EXPIRED`), the API supplies the API Provider's Consent capture URL.
+    * Offers a Consent Capture URL: This functionality is specific to the `dpv:Consent` legal basis. If the API Consumer sets `requestCaptureUrl` to `true`, and if a user needs to provide or renew their Consent, the API supplies the API Provider's Consent capture URL.
 
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 
@@ -162,7 +162,7 @@ paths:
                         purpose: "dpv:FraudPreventionAndDetection"
                         legalBasis: "dpv:Consent"
                         statusValidForProcessing: false
-                        statusReason: PENDING
+                        statusReason: REQUESTED
                 CONSENT_REQUIRED_CAPTURE_URL:
                   summary: Consent is required and capture URL is provided
                   description: |
@@ -331,7 +331,7 @@ components:
           type: string
           format: url
           description: |
-            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `statusInfo[*].legalBasis` is `dpv:Consent`, `statusInfo[*].statusValidForProcessing` is `false`, and `statusInfo[*].statusReason` is `PENDING` or `EXPIRED`.
+            URL where the User can provide the necessary Consent. This field is only present if requested by the API Consumer and if `statusInfo[*].legalBasis` is `dpv:Consent`, `statusInfo[*].statusValidForProcessing` is `false`, and `statusInfo[*].statusReason` is `PENDING`, `REQUESTED` or `EXPIRED`.
           example: 'https://example.org/consent-capture-url'
     statusInfo:
       type: array
@@ -374,6 +374,7 @@ components:
           type: string
           enum:
             - PENDING
+            - REQUESTED
             - REVOKED
             - EXPIRED
           description: |
@@ -382,6 +383,8 @@ components:
               Possible values are:
               - `PENDING`: The specified `legalBasis` is not yet established or fully validated for the requested data processing.
                            For example, the user has not yet provided Consent under `dpv:Consent` Legal Basis.
+              - `REQUESTED`: Where applicable, the specified `legalBasis` has been requested but not yet granted or confirmed.
+                           This is common for `dpv:Consent`, where the API Consumer has initiated a request for Consent capture, but the User has not yet completed the process. For example, this occurs when a notice prompting the User to Provide consent has been displayed, but they have not yet made a decision.
               - `REVOKED`: Where applicable (primarily for `dpv:Consent` and `dpv:LegitimateInterest`), the user has actively withdrawn their permission, or the previously valid `legalBasis` is no longer considered so due to user action.
                            This includes revocation of Consent or a successful objection (opt-out) to processing based on legitimate interest.
               - `EXPIRED`: Where applicable, the validity of the `legalBasis` for data processing has ceased due to the passage of time or a pre-defined condition.
