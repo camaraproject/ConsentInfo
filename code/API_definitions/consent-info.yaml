@@ -481,7 +481,7 @@ components:
                   code:
                     enum:
                       - PERMISSION_DENIED
-                      - CONSENT_INFO.NOT_ALLOWED_SCOPES
+                      - CONSENT_INFO.NOT_ALLOWED_SCOPES_PURPOSE
                       - CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED
           examples:
             GENERIC_403_PERMISSION_DENIED:
@@ -490,11 +490,11 @@ components:
                 status: 403
                 code: PERMISSION_DENIED
                 message: Client does not have sufficient permissions to perform this action.
-            NOT_ALLOWED_SCOPES:
+            NOT_ALLOWED_SCOPES_PURPOSE:
               description: The requested scope(s) and Purpose combination is not allowed for the API Consumer, e.g. the API Consumer has not onboarded the appropriate API(s) with the API Provider for the declared Purpose.
               value:
                 status: 403
-                code: CONSENT_INFO.NOT_ALLOWED_SCOPES
+                code: CONSENT_INFO.NOT_ALLOWED_SCOPES_PURPOSE
                 message: The requested scope(s) and Purpose combination is not allowed for this API Consumer.
             CAPTURE_FREQUENCY_EXCEEDED:
               description: The frequency of consent capture requests has been exceeded.
