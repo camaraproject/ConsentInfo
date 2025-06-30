@@ -77,7 +77,7 @@ paths:
       summary: Create a request to verify the status of Consent or other Legal Basis
       description: |
         Create a request to verify the Consent or other Legal Basis of a specific User to the API Consumer for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
-      operationId: verifyConsentStatus
+      operationId: verifyStatus
       security:
         - openId:
             - consent-info:verify
