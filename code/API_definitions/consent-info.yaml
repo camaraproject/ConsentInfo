@@ -4,7 +4,7 @@ info:
   description: |
 
     The Consent Info API allows the API Consumer to get the privacy status of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
-    
+
     # Introduction
 
     # Relevant terms and definitions
