@@ -3,9 +3,9 @@ info:
   title: Consent Info API
   description: |
 
-    The Consent Info API allows an API Consumer to verify the Consent status of a particular User for that API Consumer (identified by `client_id` from the access token) concerning requested scope(s) and a specific Purpose. It helps determine if Consent is legally required for these parameters. If Consent is necessary but not yet granted, or if it has expired, the API can provide a URL pointing to the API Provider's Consent capture channel. This enables the API Consumer to direct the User to grant or renew Consent in a secure and trusted environment.
+    The Consent Info API allows an API Consumer request the privacy status of a particular User for that API Consumer (identified by `client_id` from the access token) concerning requested scope(s) and a specific Purpose. It helps determine if Consent is legally required for these parameters. If Consent is necessary but not yet granted, or if it has expired, the API can provide a URL pointing to the API Provider's Consent capture channel. This enables the API Consumer to direct the User to grant or renew Consent in a secure and trusted environment.
 
-    While verifying User Consent is a primary use case, this API allows to check the validity of *any* Legal Basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`, `dpv:Contract`, etc) that authorizes data processing for a given Purpose.
+    While retrieving User Consent is a primary use case, this API allows to check the validity of *any* Legal Basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`, `dpv:Contract`, etc) that authorizes data processing for a given Purpose.
 
     # Introduction
 
@@ -289,12 +289,15 @@ components:
       description: |
         The request body for the status verification request. It contains the requested scope(s), the Purpose for which the API Consumer intends to process the User's Personal Data, a flag indicating whether the API Consumer requests a Consent capture URL and optionally the phone number of the User. The phone number is required when the API is invoked using a two-legged access token, but MUST NOT be provided when a three-legged access token is used, as the subject will be uniquely identified from the access token.
       required:
+        - legalBasis
         - scopes
         - purpose
         - requestCaptureUrl
       properties:
         phoneNumber:
           $ref: "#/components/schemas/PhoneNumber"
+        legalBasis:
+          $ref: "#/components/schemas/LegalBasis"
         scopes:
           $ref: "#/components/schemas/Scopes"
         purpose:
@@ -320,6 +323,18 @@ components:
       description: |
         The reason for which Personal Data will be processed by the API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended Personal Data processing.
       example: "dpv:FraudPreventionAndDetection"
+    LegalBasis:
+      type: string
+      description: |
+          The applicable Legal Basis for the requested scope(s) and Purpose. It uses terms from the W3C [Data Privacy Vocabulary](https://w3c.github.io/dpv/2.1/) (DPV).
+      enum:
+        - dpv:Consent
+        - dpv:LegitimateInterest
+        - dpv:Contract
+        - dpv:LegalObligation
+        - dpv:PublicInterest
+        - dpv:VitalInterest
+      example: "dpv:Consent"
     VerifyStatusResponseBody:
       type: object
       required:
@@ -354,16 +369,7 @@ components:
         purpose:
           $ref: "#/components/schemas/Purpose"
         legalBasis:
-          type: string
-          description: |
-              The applicable Legal Basis for the requested scope(s) and Purpose. It uses terms from the W3C [Data Privacy Vocabulary](https://w3c.github.io/dpv/2.1/) (DPV).
-          enum:
-            - dpv:Consent
-            - dpv:LegitimateInterest
-            - dpv:Contract
-            - dpv:LegalObligation
-            - dpv:PublicInterest
-            - dpv:VitalInterest
+          $ref: "#/components/schemas/LegalBasis"
         statusValidForProcessing:
           type: boolean
           description: |
