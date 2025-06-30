@@ -27,12 +27,12 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 ## Release Information
 
 * Note: Please be aware that the project will have updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
-* `NEW`: Pre-release r3.1 of API version `0.1.0-rc.1` is available [here](https://github.com/camaraproject/ConsentInfo/tree/r3.1)
+* `NEW`: Pre-release r1.1 of API version `0.1.0-rc.1` is available [here](https://github.com/camaraproject/ConsentInfo/tree/r1.1)
   * API definition **with inline documentation**:
-    * [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r3.1/code/API_definitions/consent-info.yaml&nocors)
-    * [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r3.1/code/API_definitions/consent-info.yaml)
-    * OpenAPI [YAML spec file](https://github.com/camaraproject/ConsentInfo/blob/r3.1/code/API_definitions/consent-info.yaml)
-  * API additional [related documentation](https://github.com/camaraproject/ConsentInfo/tree/r3.1/documentation/API_documentation)
+    * [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.1/code/API_definitions/consent-info.yaml&nocors)
+    * [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.1/code/API_definitions/consent-info.yaml)
+    * OpenAPI [YAML spec file](https://github.com/camaraproject/ConsentInfo/blob/r1.1/code/API_definitions/consent-info.yaml)
+  * API additional [related documentation](https://github.com/camaraproject/ConsentInfo/tree/r1.1/documentation/API_documentation)
 
 <!-- Optional: an explicit listing of the latest (pre-)release with additional information, e.g. links to the API definitions -->
 <!-- In addition use/uncomment one or multiple the following alternative options when becoming applicable -->

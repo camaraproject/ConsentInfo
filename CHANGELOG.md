@@ -2,7 +2,7 @@
 
 ## Table of contents
 
-- **[r3.1](#r31)**
+- **[r1.1](#r11)**
 
 **Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until it has been released. For example, changes may be reverted before a release is published. For the best results, use the latest published release.**
 
@@ -15,7 +15,7 @@ The below sections record the changes for each API version in each release as fo
 
 <!--Repeat the below release section (header 1 and subsections) at the top of this file for each new (pre-)release-->
 
-# r3.1
+# r1.1
 
 ## Release Notes
 
@@ -41,9 +41,9 @@ Version 0.1.0 provides the initial API definition and documentation for the cons
   * Offers a Consent Capture URL: This functionality is specific to the `dpv:Consent` legal basis. If the API Consumer sets `requestCaptureUrl` to `true`, and if a user needs to provide or renew their Consent, the API supplies the API Provider's Consent capture URL.
 
 - API definition **with inline documentation**:
-  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r3.1/code/API_definitions/consent-info.yaml&nocors)
-  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r3.1/code/API_definitions/consent-info.yaml)
-  - OpenAPI [YAML spec file](https://github.com/camaraproject/ConsentInfo/blob/r3.1/code/API_definitions/consent-info.yaml)
+  - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.1/code/API_definitions/consent-info.yaml&nocors)
+  - [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.1/code/API_definitions/consent-info.yaml)
+  - OpenAPI [YAML spec file](https://github.com/camaraproject/ConsentInfo/blob/r1.1/code/API_definitions/consent-info.yaml)
 
 ### Added
 
