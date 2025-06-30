@@ -3,8 +3,8 @@ info:
   title: Consent Info API
   description: |
 
-    The Consent Info API allows the API Consumer to verify the Consent status of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
-
+    The Consent Info API allows the API Consumer to get the privacy status of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
+    
     # Introduction
 
     # Relevant terms and definitions
@@ -61,30 +61,30 @@ servers:
         default: http://localhost:9091
         description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
 tags:
-  - name: Verify Consent Status
-    description: Create a request to verify the Consent status
+  - name: Get Consent Status
+    description: Create a request to get the Consent status
 paths:
-  /verify:
+  /get-status:
     post:
-      summary: Create a request to verify the Consent status
+      summary: Gets the current privacy status of an user
       description: |
-        Create a request to verify the Consent status of a specific User to the API Consumer for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
-      operationId: verifyConsentStatus
+        Gets the current privacy status of a specific User for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+      operationId: getStatus
       security:
         - openId:
-            - consent-info:verify
+            - consent-info:get-status
       tags:
-        - Verify Consent Status
+        - Get Consent Status
       parameters:
         - $ref: '#/components/parameters/x-correlator'
       requestBody:
         required: true
         description:
-          Consent status verification request
+          Privacy status request
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VerifyConsentStatusRequestBody"
+              $ref: "#/components/schemas/GetStatusRequestBody"
             examples:
               ONE_SCOPE_ONE_API:
                 summary: One scope
@@ -130,7 +130,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VerifyConsentStatusResponseBody"
+                $ref: "#/components/schemas/GetStatusResponseBody"
               examples:
                 CONSENT_NOT_REQUIRED:
                   summary: Consent is not required
@@ -219,7 +219,7 @@ paths:
         "401":
           $ref: "#/components/responses/Generic401"
         "403":
-          $ref: "#/components/responses/verifyConsentStatus403"
+          $ref: "#/components/responses/getStatus403"
         "404":
           $ref: "#/components/responses/Generic404"
         "422":
@@ -246,7 +246,7 @@ components:
       description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
       pattern: '^\+[1-9][0-9]{4,14}$'
       example: "+123456789"
-    VerifyConsentStatusRequestBody:
+    GetStatusRequestBody:
       type: object
       required:
         - scopes
@@ -280,7 +280,7 @@ components:
       description: |
         The reason for which Personal Data will be processed by the API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended Personal Data processing.
       example: "dpv:FraudPreventionAndDetection"
-    VerifyConsentStatusResponseBody:
+    GetStatusResponseBody:
       type: object
       required:
         - privacyStatus
@@ -396,7 +396,7 @@ components:
                 status: 401
                 code: UNAUTHENTICATED
                 message: Request not authenticated due to missing, invalid, or expired credentials.
-    verifyConsentStatus403:
+    getStatus403:
       description: Forbidden
       headers:
         x-correlator:
