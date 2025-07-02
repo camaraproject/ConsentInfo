@@ -67,7 +67,7 @@ Feature: CAMARA Consent Info API, vwip - Operation verifyStatus
     And the response property "$.statusInfo[*].scopes" is either equal to or a subset of the requested scopes
     And the response property "$.statusInfo[*].purpose" matches the requested purpose
     And the response property "$.statusInfo[*].statusValidForProcessing" is true
-    And the response property "$.statusInfo[*].expirationDate" is present and it is in the future
+    And the response property "$.statusInfo[*].expirationDate" is present and its value is in the future
 
   @consent_info_verifyStatus_05_not_valid_for_processing_expiration_date
   # This scenario is only applicable if the API Provider has implemented the expirationDate property
@@ -82,7 +82,7 @@ Feature: CAMARA Consent Info API, vwip - Operation verifyStatus
     And the response property "$.statusInfo[*].purpose" matches the requested purpose
     And the response property "$.statusInfo[*].statusValidForProcessing" is false
     And the response property "$.statusInfo[*].statusReason" is "EXPIRED"
-    And the response property "$.statusInfo[*].expirationDate" is present and it is in the past
+    And the response property "$.statusInfo[*].expirationDate" is present and its value is in the past
 
   @consent_info_verifyStatus_06_captureUrl
   Scenario: API Consumer requests API Provider to return a Consent capture URL
