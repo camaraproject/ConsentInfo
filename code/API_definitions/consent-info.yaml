@@ -3,7 +3,7 @@ info:
   title: Consent Info API
   description: |
 
-    The Consent Info API allows the API Consumer to get the privacy status of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
+    The Consent Info API allows the API Consumer to retrieve whether the API consumer has permission to process the personal information of a particular User for that API Consumer and for the requested scope(s) and Purpose. If the Consent is required for the requested scope(s) and Purpose, but has not been granted by the User, the API can also provide a URL pointing to the API Provider's Consent capture channel, enabling the API Consumer to request Consent from the User.
 
     # Introduction
 
@@ -61,20 +61,20 @@ servers:
         default: http://localhost:9091
         description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
 tags:
-  - name: Get Consent Status
-    description: Create a request to get the Consent status
+  - name: Retrieve status
+    description: Retrieve whether the API consumer may process the personal information of the user
 paths:
-  /get-status:
+  /retrieve:
     post:
-      summary: Gets the current privacy status of an user
+      summary: Retrieves the current privacy status of an user
       description: |
-        Gets the current privacy status of a specific User for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+        Retrieves the current privacy status of a specific User for the requested scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
       operationId: getStatus
       security:
         - openId:
-            - consent-info:get-status
+            - consent-info:retrieve
       tags:
-        - Get Consent Status
+        - Retrieves Consent Status
       parameters:
         - $ref: '#/components/parameters/x-correlator'
       requestBody:
