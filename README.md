@@ -18,9 +18,9 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 
 * API(s) “ConsentInfo”
 * The API(s) provide(s) the API consumer with the ability to:  
-  * Indicate the applicable Legal Basis: Indicates which legal basis (e.g., `dpv:Consent`, `dpv:LegitimateInterest`) is required for the requested scopes, Purpose, and API Consumer according to relevant legal frameworks.
-  * Provide the data processing validity status and reason: The API returns `statusValidForProcessing`, a boolean flag that is `true` if processing is permitted. If the flag is `false`, a `statusReason` field is also returned to explain why.
-  * Offers a Consent Capture URL: This functionality is specific to the `dpv:Consent` legal basis. If the API Consumer sets `requestCaptureUrl` to `true`, and if a user needs to provide or renew their Consent, the API supplies the API Provider's Consent capture URL.
+  * **Check the validity of data processing**: The API returns `statusValidForProcessing`, a boolean flag that indicates whether the requested data processing is currently permitted (`true`) or not (`false`).
+  * **Understand why processing is not allowed**: If data processing is not permitted, the response includes a `statusReason` field to explain why.
+  * **Retrieve a Capture URL (if requested)**: If the status is not valid because user action is required, and the API Consumer sets `requestCaptureUrl` to `true`, the API will return a `captureUrl` field that can be presented to the User. This URL directs them to the API Provider's secure Consent capture channel, where they can provide or renew their Consent.
   
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 * Describe, develop, document, and test the API(s)
