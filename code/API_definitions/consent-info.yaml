@@ -318,7 +318,7 @@ components:
             URL where the User can provide the necessary Consent. This field is only present in the API response if the API Consumer requests it and if the following conditions are met:
 
             - `statusInfo[*].statusValidForProcessing` is `false`, and
-            - `statusInfo[*].statusReason` is `PENDING`, `REQUESTED` or `EXPIRED`. 
+            - `statusInfo[*].statusReason` is `PENDING`, `REQUESTED` or `EXPIRED`.
 
             Please note that this field is only applicable when the User Consent is required to enable valid data processing. A unique URL is provided to authorise all items in the statusInfo list that require user action.
           example: "https://example.org/consent-capture-url"
@@ -358,9 +358,9 @@ components:
             - OBJECTED
           description: |
             This field must be present if `statusValidForProcessing` is `false`. It indicates the reason why the requested data processing is not permitted for the specified scope(s) and Purpose. It provides API Consumers with additional context on the current validity status, helping them to understand its applicability and the next steps they may need to take.
-              
+
             It is particularly useful for determining whether the API Consumer should prompt the User to take action, such as providing Consent or renewing an existing Consent.
-              
+
             Possible values are:
 
             - `PENDING`: The requested data processing has not yet been established or fully validated under the applicable privacy regulations.
@@ -379,10 +379,10 @@ components:
           description: |
             The date and time at which the validity of the data processing is set to expire or has expired.
             It applies mainly to time-limited Consents, or other cases where a specific duration of validity is defined for the data processing. This field is only applicable:
-             
-            - if `statusValidForProcessing` is `true` (indicating a future expiration), or 
-            - if `statusValidForProcessing` is `false` and `statusReason` is `EXPIRED` (indicating the past expiration date). 
-             
+
+            - if `statusValidForProcessing` is `true` (indicating a future expiration), or
+            - if `statusValidForProcessing` is `false` and `statusReason` is `EXPIRED` (indicating the past expiration date).
+
             It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
           example: "2023-07-03T14:27:08.312+02:00"
     ErrorInfo:
