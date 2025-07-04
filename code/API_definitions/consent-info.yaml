@@ -2,11 +2,11 @@ openapi: 3.0.3
 info:
   title: Consent Info API
   description: |
-    The Consent Info API allows API Consumers to easily validate whether they have the necessary permissions to process User's personal data for a specific Purpose before using other CAMARA APIs. It provides a simple `true`/`false` response and, where applicable, a URL to direct the User to manage their Consent.
+    The Consent Info API allows API Consumers to easily validate whether they have the necessary permissions to process User's personal data for a specific Purpose before using other CAMARA APIs. It provides a simple `true`/`false` response and, when applicable, a URL to direct the User to manage their Consent.
 
     # Introduction
 
-    This API facilitates compliance with privacy regulations and promotes transparency with Users by providing a standardized way to check whether, for example, the User has given their Consent or opted out of data processing. Key inputs include the specific scope(s) of access being requested (i.e. the CAMARA API(s) operations to which the data processing refers), the Purpose for data processing, and a User identifier (either explicitly provided or derived from a three-legged access token). The API responds with the validity status of the data processing, and, where applicable, can provide a capture URL for the API Consumer to manage it.
+    This API facilitates compliance with privacy regulations and promotes transparency with Users by providing a standardized way to check whether, for example, the User has given their Consent or opted out of data processing. Key inputs include the specific scope(s) of access being requested (i.e. the CAMARA API(s) operations to which the data processing refers), the Purpose for data processing, and a User identifier (either explicitly provided or derived from a three-legged access token). The API responds with the validity status of the data processing, and, when applicable, can provide a capture URL for the API Consumer to manage it.
 
     # Relevant terms and definitions
 
@@ -16,7 +16,7 @@ info:
 
     # API Functionality
 
-    This API enables an API Consumer to determine whether the status of data processing is valid or not for a given User, based on the provided scope(s) and Purpose, as well as the API Consumer making the request.
+    This API enables the API Consumer making the request to determine whether its data processing is permitted for a given User, scope(s) and Purpose.
 
     Specifically, the API:
 
@@ -24,7 +24,7 @@ info:
     * **Provides an explanation if invalid**: If data processing is not permitted, the response includes a `statusReason` field to explain why.
     * **Offers a Capture URL (if requested)**: If the status is not valid because user action is required, and the API Consumer sets `requestCaptureUrl` to `true`, the API will return a `captureUrl` field that can be presented to the User. This URL directs them to the API Provider's secure Consent capture channel, where they can provide or renew their Consent.
 
-    **Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.**
+    Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 
     # Authorization and authentication
 
@@ -70,7 +70,7 @@ paths:
     post:
       summary: Create a request to retrieve the validity status of the data processing
       description: |
-        Create a request to retrieve the validity status of data processing for a given User, based on the provided scope(s) and Purpose, as well as the API Consumer making the request. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+        Create a request to retrieve the validity status of the API Consumer data processing for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
       operationId: retrieveStatus
       security:
         - openId:
@@ -371,7 +371,7 @@ components:
                         For example, the User revokes their Consent for the data processing.
             - `OBJECTED`: The user has opted out of the requested data processing, despite a previous explicit opt-in not being required.
                         This is common when the User has exercised their right to object to data processing under the applicable privacy regulations.
-            - `EXPIRED`: Where applicable, the validity of the data processing has ceased due to the passage of time or a pre-defined condition.
+            - `EXPIRED`: When applicable, the validity of the data processing has ceased due to the passage of time or a pre-defined condition.
                         This is common for time-limited Consents.
         expirationDate:
           type: string
