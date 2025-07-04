@@ -10,8 +10,8 @@ Checklist for consent-info v0.1.0-rc.1 in r1.1.
 |  4 | API versioning convention applied            |   M   |         M         |    M    |    M   |   Y   |                  |
 |  5 | API documentation                            |   M   |         M         |    M    |    M   |   Y   | in [yaml]((/code/API_definitions/consent-info.yaml)) |
 |  6 | User stories                                 |   O   |         O         |    O    |    M   |   N   | [relative link](/documentation/API_documentation/apiname-Userstory.md) |
-|  7 | Basic API test cases & documentation         |   O   |         M         |    M    |    M   |   tbd   | [relative link](/code/Test_definitions) |
-|  8 | Enhanced API test cases & documentation      |   O   |         O         |    O    |    M   |   N   | [relative link](/code/Test_definitions) |
+|  7 | Basic API test cases & documentation         |   O   |         M         |    M    |    M   |   Y   | [relative link](/code/Test_definitions) |
+|  8 | Enhanced API test cases & documentation      |   O   |         O         |    O    |    M   |   Y   | [relative link](/code/Test_definitions) |
 |  9 | Test result statement                        |   O   |         O         |    O    |    M   |   N   | issue link       |
 | 10 | API release numbering convention applied     |   M   |         M         |    M    |    M   |   Y   |                  |
 | 11 | Change log updated                           |   M   |         M         |    M    |    M   |   Y   | [relative link](/CHANGELOG.md) |
