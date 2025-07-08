@@ -16,7 +16,7 @@ info:
 
     # API Functionality
 
-    This API enables the API Consumer making the request to determine whether its data processing is permitted for a given User, scope(s) and Purpose.
+    This API enables the API Consumer to determine whether their data processing is permitted for a given User, scope(s) and Purpose.
 
     Specifically, the API:
 
