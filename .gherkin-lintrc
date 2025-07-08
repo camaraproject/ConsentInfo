@@ -54,9 +54,7 @@
       "^globally restricted pattern"
     ],
     "Feature": [
-      "poor description",
-      "validate",
-      "verify"
+      "poor description"
     ],
     "Background": [
       "show last response",
