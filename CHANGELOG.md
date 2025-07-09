@@ -21,15 +21,10 @@ The below sections record the changes for each API version in each release as fo
 
 This release contains the definition and documentation of
 * consent-info v0.1.0-rc.1
-<!--* API-name2 vx.y.z - unchanged-->
-<!--In case the repository (and hence its release) contains multiple APIs, list them all here. Also mention if an API in the repository is unchanged. Note: There shall be no "wip" API version in the repository at the time of release.-->
 
-<!--For any API version, if known, and for public API versions, include the link to the related Commonalities and ICM releases:-->
 The API definition(s) are based on
-* Commonalities r3.3
-* Identity and Consent Management r3.3
-
-<!--In case the repository contains multiple APIs, for each API version that changed in this release, create additional sections by copying and filling the below template (level 2 and 3 sections), replacing the API-name and API-version vx.y.z with actual API name and version.-->
+* Commonalities r3.2
+* Identity and Consent Management r3.2
 
 ## consent-info v0.1.0-rc.1
 
@@ -41,7 +36,7 @@ Version 0.1.0 provides the initial API definition and documentation for the cons
 
   - **Check the validity of data processing**: The API returns `statusValidForProcessing`, a boolean flag that indicates whether the requested data processing is currently permitted (`true`) or not (`false`).
   - **Understand why processing is not allowed**: If data processing is not permitted, the response includes a `statusReason` field to explain why.
-  - **Retrieve a Capture URL (if requested)**: If the status is not valid because user action is required, and the API Consumer sets `requestCaptureUrl` to `true`, the API will return a `captureUrl` field that can be presented to the User. This URL directs them to the API Provider's secure Consent capture channel, where they can provide or renew their Consent.
+  - **Retrieve a Capture URL (if requested)**: If the status is not valid because user action is required, and the API Consumer sets `requestCaptureUrl` to `true`, the API will return a `captureUrl` field that can be presented to the user. This URL directs them to the API Provider's secure consent capture channel, where they can provide or renew their consent.
   
 - API definition **with inline documentation**:
   - [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.1/code/API_definitions/consent-info.yaml&nocors)

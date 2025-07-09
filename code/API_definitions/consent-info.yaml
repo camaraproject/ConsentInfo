@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  title: Consent Info API
+  title: Consent Info
   description: |
     The Consent Info API allows API Consumers to easily validate whether they have the necessary permissions to process User's personal data for a specific Purpose before using other CAMARA APIs. It provides a simple `true`/`false` response and, when applicable, a URL to direct the User to manage their Consent.
 
@@ -62,8 +62,11 @@ info:
   license:
     name: Apache 2.0
     url: https://www.apache.org/licenses/LICENSE-2.0.html
-  version: v0.1.0-rc.1
+  version: 0.1.0-rc.1
   x-camara-commonalities: 0.6
+externalDocs:
+  description: Product documentation at CAMARA
+  url: https://github.com/camaraproject/ConsentInfo
 servers:
   - url: "{apiRoot}/consent-info/v0.1rc1"
     variables:
@@ -461,7 +464,7 @@ components:
               value:
                 status: 401
                 code: UNAUTHENTICATED
-                message: Request not authenticated due to missing, invalid, or expired credentials.
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
     retrieveStatus403:
       description: Forbidden
       headers:
