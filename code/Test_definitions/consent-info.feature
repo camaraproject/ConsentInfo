@@ -1,4 +1,4 @@
-Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
+Feature: CAMARA Consent Info API, v0.1.0-rc.1 - Operation retrieveStatus
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
@@ -11,7 +11,7 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
 
   Background: Common retrieveStatus setup
     Given an environment at "apiRoot"
-    And the resource "/consent-info/vwip/retrieve"
+    And the resource "/consent-info/v0.1rc1/retrieve"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
