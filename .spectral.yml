@@ -267,3 +267,14 @@ rules:
       functionOptions:
         match: "^\/([a-z0-9]+(-[a-z0-9]+)*)?(\/[a-z0-9]+(-[a-z0-9]+)*|\/{.+})*$"  # doesn't allow /asasd{asdas}sadas pattern or not closed braces
     recommended: true  # Set to true/false to enable/disable this rule
+
+  camara-schema-type-check:
+    message: "Invalid type in schema definition."
+    severity: error
+    given: "$.components.schemas.*"
+    then:
+      field: type
+      function: pattern
+      functionOptions:
+        match: "^(string|number|integer|boolean|array|object)$"
+    recommended: true
