@@ -2,10 +2,10 @@ Feature: CAMARA Consent Info API, v0.1.0 - Operation retrieveStatus
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
-  # * 
+  # *
   #
   # Testing assets:
-  # * 
+  # *
   #
   # References to OAS spec schemas refer to schemas specifies in consent-info.yaml
 
