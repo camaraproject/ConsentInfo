@@ -104,9 +104,10 @@ paths:
                   Request with one scope corresponding to one API
                 value:
                   phoneNumber: "+123456789"
-                  scopes:
-                    - "location-verification:verify"
-                  purpose: "dpv:FraudPreventionAndDetection"
+                  purposeAndScopes:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
                   requestCaptureUrl: true
               MULTIPLE_SCOPES_ONE_API:
                 summary: Multiple scopes for one API
@@ -114,13 +115,14 @@ paths:
                   Request with multiple scopes corresponding to one API
                 value:
                   phoneNumber: "+123456789"
-                  scopes:
-                    - "quality-on-demand:sessions:create"
-                    - "quality-on-demand:sessions:read"
-                    - "quality-on-demand:sessions:update"
-                    - "quality-on-demand:sessions:delete"
-                    - "quality-on-demand:sessions:retrieve-by-device"
-                  purpose: "dpv:RequestedServiceProvision"
+                  purposeAndScopes:
+                    - scopes:
+                        - "quality-on-demand:sessions:create"
+                        - "quality-on-demand:sessions:read"
+                        - "quality-on-demand:sessions:update"
+                        - "quality-on-demand:sessions:delete"
+                        - "quality-on-demand:sessions:retrieve-by-device"
+                      purpose: "dpv:RequestedServiceProvision"
                   requestCaptureUrl: true
               MULTIPLE_SCOPES_MULTIPLE_APIS:
                 summary: Multiple scopes for multiple APIs
@@ -128,10 +130,29 @@ paths:
                   Request with multiple scopes corresponding to multiple APIs
                 value:
                   phoneNumber: "+123456789"
-                  scopes:
-                    - "location-verification:verify"
-                    - "device-roaming-status:read"
-                  purpose: "dpv:FraudPreventionAndDetection"
+                  purposeAndScopes:
+                    - scopes:
+                        - "location-verification:verify"
+                        - "device-roaming-status:read"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                  requestCaptureUrl: true
+              MULTIPLE_PURPOSES_MULTIPLE_SCOPES_MULTIPLE_APIS:
+                summary: Multiple scopes for multiple APIs
+                description: |
+                  Request with multiple scopes corresponding to multiple APIs
+                value:
+                  phoneNumber: "+123456789"
+                  purposeAndScopes:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                    - scopes:
+                        - "quality-on-demand:sessions:create"
+                        - "quality-on-demand:sessions:read"
+                        - "quality-on-demand:sessions:update"
+                        - "quality-on-demand:sessions:delete"
+                        - "quality-on-demand:sessions:retrieve-by-device"
+                      purpose: "dpv:RequestedServiceProvision"
                   requestCaptureUrl: true
       responses:
         "200":
@@ -285,16 +306,15 @@ components:
       description: |
         The request body for the retrieve status request. It contains the requested scope(s), the Purpose for which the API Consumer intends to process the User's personal data, a flag indicating whether the API Consumer requests a Consent capture URL and optionally the phone number of the User. The phone number is required when the API is invoked using a two-legged access token, but MUST NOT be provided when a three-legged access token is used, as the subject will be uniquely identified from the access token.
       required:
-        - scopes
-        - purpose
+        - PurposeAndDataScope
         - requestCaptureUrl
       properties:
         phoneNumber:
           $ref: "#/components/schemas/PhoneNumber"
-        scopes:
-          $ref: "#/components/schemas/Scopes"
-        purpose:
-          $ref: "#/components/schemas/Purpose"
+        purposesAndScopes:
+          type: array
+          items:
+            $ref: "#/components/schemas/PurposeAndScopes"
         requestCaptureUrl:
           type: boolean
           description: |
@@ -302,6 +322,15 @@ components:
             * `true` - If set to `true` the API will include a `captureUrl` in the response body if applicable.
             * `false` - The API will omit the Consent capture URL from the response.
           example: true
+    PurposeAndScopes:
+      type: object
+      description: >
+        A list of data-scopes and their corresponding purposes
+      properties:
+        scopes:
+          $ref: "#/components/schemas/Scopes"
+        purpose:
+          $ref: "#/components/schemas/Purpose"
     Scopes:
       type: array
       minItems: 1
