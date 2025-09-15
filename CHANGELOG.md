@@ -29,7 +29,7 @@ The API definition(s) are based on
 
 ## consent-info v0.1.0
 
-**consent-info v0.1.0 is the public release of the version 0.1.0**
+**consent-info v0.1.0 is the first public version of this API.**
 
 Version 0.1.0 provides the initial API definition and documentation for the consent-info API, which is part of the Identity and Consent Management (ICM) Working Group. 
 
