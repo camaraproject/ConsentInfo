@@ -29,7 +29,7 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 ## Release Information
 
 * Note: Please be aware that the project will have updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
-* `NEW`: Public release r1.2 of API version `0.1.0` is available [here](https://github.com/camaraproject/ConsentInfo/tree/r1.2)
+* `NEW`: Public release r1.2 of API version `0.1.0` is available [here](https://github.com/camaraproject/ConsentInfo/releases/tag/r1.2)
   * API definition **with inline documentation**:
     * [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml&nocors)
     * [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml)
