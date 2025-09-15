@@ -33,7 +33,7 @@ The API definition(s) are based on
 
 Version 0.1.0 provides the initial API definition and documentation for the consent-info API, which is part of the Identity and Consent Management (ICM) Working Group. 
 
-- This API version provide the API consumer with the ability to:
+- This API version provides the API consumer with the ability to:
 
   - **Check the validity of data processing**: The API returns `statusValidForProcessing`, a boolean flag that indicates whether the requested data processing is currently permitted (`true`) or not (`false`).
   - **Understand why processing is not allowed**: If data processing is not permitted, the response includes a `statusReason` field to explain why.
