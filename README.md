@@ -16,7 +16,7 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 
 ## Scope
 
-* API(s) “ConsentInfo”
+* Service APIs for “ConsentInfo" (see APIBacklog.md)
 * The API(s) provide(s) the API consumer with the ability to:  
   * **Check the validity of data processing**: The API returns `statusValidForProcessing`, a boolean flag that indicates whether the requested data processing is currently permitted (`true`) or not (`false`).
   * **Understand why processing is not allowed**: If data processing is not permitted, the response includes a `statusReason` field to explain why.
