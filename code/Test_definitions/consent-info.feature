@@ -7,7 +7,7 @@ Feature: CAMARA Consent Info API, v0.1.0 - Operation retrieveStatus
   # Testing assets:
   # *
   #
-  # References to OAS spec schemas refer to schemas specifies in consent-info.yaml
+  # References to OAS spec schemas refer to schemas specified in consent-info.yaml
 
   Background: Common retrieveStatus setup
     Given an environment at "apiRoot"
