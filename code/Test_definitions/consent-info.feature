@@ -1,17 +1,17 @@
-Feature: CAMARA Consent Info API, v0.1.0-rc.1 - Operation retrieveStatus
+Feature: CAMARA Consent Info API, v0.1.0 - Operation retrieveStatus
   # Input to be provided by the implementation to the tester
   #
   # Implementation indications:
-  # * TBC
+  # *
   #
   # Testing assets:
-  # * TBC
+  # *
   #
-  # References to OAS spec schemas refer to schemas specifies in consent-info.yaml
+  # References to OAS spec schemas refer to schemas specified in consent-info.yaml
 
   Background: Common retrieveStatus setup
     Given an environment at "apiRoot"
-    And the resource "/consent-info/v0.1rc1/retrieve"
+    And the resource "/consent-info/v0.1/retrieve"
     And the header "Content-Type" is set to "application/json"
     And the header "Authorization" is set to a valid access token
     And the header "x-correlator" complies with the schema at "#/components/schemas/XCorrelator"
