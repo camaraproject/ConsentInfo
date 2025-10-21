@@ -329,7 +329,7 @@ components:
           type: string
           format: uri
           description: |
-            Optional URL to which the User shall be redirected by the API Provider once the Consent Capture process has reached a final state (e.g., The User has given their consent). This parameter is only applicable when the API Consumer requests a Consent capture URL by setting `requestCaptureUrl` to `true`. 
+            Optional URL to which the User shall be redirected by the API Provider once the Consent Capture process has reached a final state (e.g., The User has given their consent). This parameter is only applicable when the API Consumer requests a Consent capture URL by setting `requestCaptureUrl` to `true`.
 
             The `callbackUrl` parameter enables API Consumers to seamlessly regain control of the user experience once the Consent Capture journey is completed.
 
