@@ -23,6 +23,7 @@ info:
     * **Provides the data processing validity status**: The API returns `statusValidForProcessing`, a boolean flag that indicates whether the requested data processing is currently permitted (`true`) or not (`false`).
     * **Provides an explanation if invalid**: If data processing is not permitted, the response includes a `statusReason` field to explain why.
     * **Offers a Capture URL (if requested)**: If the status is not valid because user action is required, and the API Consumer sets `requestCaptureUrl` to `true`, the API will return a `captureUrl` field that can be presented to the User. This URL directs them to the API Provider's secure Consent capture channel, where they can provide or renew their Consent.
+    * **Supports Callback URL**: The API Consumer can optionally provide a `callbackUrl` when requesting a Consent capture URL. This allows the API Provider to redirect the User back to the API Consumer's specified URL once the Consent capture process is completed, along with the outcome of the process.
 
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 
@@ -133,6 +134,17 @@ paths:
                     - "device-roaming-status:read"
                   purpose: "dpv:FraudPreventionAndDetection"
                   requestCaptureUrl: true
+              ONE_SCOPE_CALLBACK_URL:
+                summary: One scope with callback URL
+                description: |
+                  Request with one scope corresponding to one API including a callback URL
+                value:
+                  phoneNumber: "+123456789"
+                  scopes:
+                    - "location-verification:verify"
+                  purpose: "dpv:FraudPreventionAndDetection"
+                  requestCaptureUrl: true
+                  callbackUrl: "https://consumer.example.com/consent/callback"
       responses:
         "200":
           description: OK
@@ -178,6 +190,17 @@ paths:
                         statusReason: EXPIRED
                         expirationDate: "2023-07-03T14:27:08.312+02:00"
                     captureUrl: "https://example.org/consent-capture-url"
+                CONSENT_DENIED:
+                  summary: Consent is denied
+                  description: |
+                    Consent is denied for the requested scope(s) and Purpose.
+                  value:
+                    statusInfo:
+                      - scopes:
+                          - "location-verification:verify"
+                        purpose: "dpv:FraudPreventionAndDetection"
+                        statusValidForProcessing: false
+                        statusReason: DENIED
                 CONSENT_REVOKED:
                   summary: Consent is revoked
                   description: |
@@ -302,6 +325,42 @@ components:
             * `true` - If set to `true` the API will include a `captureUrl` in the response body if applicable.
             * `false` - The API will omit the Consent capture URL from the response.
           example: true
+        callbackUrl:
+          type: string
+          format: uri
+          description: |
+            Optional URL to which the User shall be redirected by the API Provider once the Consent Capture process has reached a final state (e.g., The User has given their consent). This parameter is only applicable when the API Consumer requests a Consent capture URL by setting `requestCaptureUrl` to `true`. 
+
+            The `callbackUrl` parameter enables API Consumers to seamlessly regain control of the user experience once the Consent Capture journey is completed.
+
+            **Functional behaviour**
+
+            When the `callbackUrl` is provided in the request, the API Provider MUST redirect the User to this URL upon completion of the Consent Capture journey. The redirection MUST include a query parameter named `capture_result` that indicates the outcome of the Consent Capture process. The possible values for `capture_result` are:
+
+            - `granted`: The User has successfully provided Consent for the specified scope(s) and Purpose.
+            - `partial_grant`: The User has provided Consent for only a subset of the originally requested scopes and Purpose. When a `partial_grant` is returned, the API Provider MUST ensure that subsequent API requests reflect the precise subset of scopes actually authorized.
+            - `denied`: The User has explicitly denied the Consent for the specified scope(s) and Purpose.
+            - `error`: The Consent Capture flow terminated abnormally due to an internal error, network issue, or unexpected failure.
+            - `timeout`: The User did not complete the Consent Capture flow within the defined timeout period.
+
+            The API Consumer MAY include a `state` query parameter when initiating the Consent Capture journey (i.e., when opening the Consent Capture URL) to correlate the process with an existing session or transaction context. If the state parameter is provided, the API Provider MUST preserve its value and append it unchanged to the callback URL when redirecting the User at the end of the journey.
+
+            e.g. `https://consumer.example.com/consent/callback?capture_result=granted&state=xyz123`
+
+            **Security considerations**
+
+            - The `callbackUrl` MUST use the `https` scheme to ensure transport security.
+              Exceptions MAY be allowed for loopback addresses (`http://127.0.0.1`, `http://[::1]`, or `http://localhost`)
+              or for custom application schemes (e.g., `myapp://consent/callback`) when used as secure deep links
+              for native applications.
+            - The `callbackUrl` SHOULD be validated by the API Provider to prevent open redirect or injection attacks.
+              Validation SHOULD ensure that the domain or scheme is either pre-registered or demonstrably under the
+              control of the API Consumer.
+            - The API Provider MUST NOT include any personal data, access tokens, or identifiers in the callback URL.
+              The `capture_result` parameter MUST be appended, as MUST the `state` parameter if it has been received previously.
+            - The API Consumer SHOULD validate the origin of incoming callbacks and confirm that the received parameters
+              correspond to an expected session or flow (e.g., by verifying the `state` value to prevent CSRF attacks).
+          example: "https://consumer.example.com/consent/callback"
     Scopes:
       type: array
       minItems: 1
@@ -366,6 +425,7 @@ components:
           enum:
             - PENDING
             - REQUESTED
+            - DENIED
             - REVOKED
             - EXPIRED
             - OBJECTED
@@ -380,6 +440,8 @@ components:
                         For example, the User has not yet provided Consent when it is required.
             - `REQUESTED`: The permission for the requested data processing has been submitted but has not yet been granted or confirmed.
                         This is common when the API Consumer has initiated a request for Consent capture, but the User has not yet completed the process. For example, this occurs when a notice prompting the User to provide Consent has been displayed, but they have not yet made a decision.
+            - `DENIED`: The User has explicitly refused their permission for the requested data processing.
+                        For example, the User denies their Consent for the data processing.
             - `REVOKED`: The User has actively withdrawn their permission for the requested data processing after previously opting in.
                         For example, the User revokes their Consent for the data processing.
             - `OBJECTED`: The user has opted out of the requested data processing, despite a previous explicit opt-in not being required.
