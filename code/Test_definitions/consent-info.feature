@@ -115,11 +115,11 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     Given a prior "retrieveStatus" request where the API Consumer requested a Consent capture URL
     And the request body property "$.callbackUrl" was set to a valid URL belonging to the API Consumer
     And the response property "$.captureUrl" is present and it contains a valid URL
-    When the User is redirected to the Consent capture URL 
+    When the User is redirected to the Consent capture URL
     And the Consent Capture process reach a final state
     Then the API Consumer receives a redirection to the callback URL provided in the original "retrieveStatus" request
     And the redirection includes a query parameter "capture_result" with a valid capture result value
-  
+
   @consent_info_retrieveStatus_08_callback_state
   Scenario: API Consumer requests a callback URL and includes a `state` query parameter when opening the Consent Capture URL
     Given a prior "retrieveStatus" request where the API Consumer requested a Consent capture URL
