@@ -547,6 +547,7 @@ components:
                       - PERMISSION_DENIED
                       - CONSENT_INFO.NOT_ALLOWED_SCOPES_PURPOSE
                       - CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED
+                      - CONSENT_INFO.INVALID_CALLBACK_URL
           examples:
             GENERIC_403_PERMISSION_DENIED:
               description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
@@ -566,6 +567,12 @@ components:
                 status: 403
                 code: CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED
                 message: The frequency of consent capture requests has been exceeded. Please try again later.
+            INVALID_CALLBACK_URL:
+              description: The provided callback URL is invalid.
+              value:
+                status: 403
+                code: CONSENT_INFO.INVALID_CALLBACK_URL
+                message: The provided callback URL is invalid.
     Generic404:
       description: Not found
       headers:
