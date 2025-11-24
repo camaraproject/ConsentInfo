@@ -1,0 +1,872 @@
+openapi: 3.0.3
+info:
+  title: Consent Management
+  description: |
+    This API enables API Consumers to manage User Consents for accessing personal data via CAMARA APIs. It allows creating, updating, and retrieving Consent information based on specific scope(s) and Purpose in the API Provider's Consent Management system.
+
+    # Introduction
+
+    In the context of CAMARA, Consent Management refers to the processes and mechanisms that allow API Consumers to obtain, manage, and verify User Consents for accessing and processing personal data through CAMARA APIs. This API specification defines the operations and data structures necessary for API Consumers to interact with Consent Management services provided by API Providers. 
+    
+    This optional, controlled delegation model enables trusted API Consumers to capture the User Consent directly within their own applications using Consent texts and parameters provided by API Providers. This model aims to streamline the User Consent capture process, enhance User experience, and ensure compliance with data protection regulations by leveraging API Provider-verified Consent texts.
+
+    # Relevant terms and definitions
+
+    * **Consent**: An explicit opt-in action that the User takes to allow processing of personal data. Consent grants the API Consumer access to a set of scopes related to the User for a specific Purpose.
+    * **Purpose**: The reason for which personal data will be processed by an API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended personal data processing. CAMARA uses the [W3C Data Privacy Vocabulary](https://w3c.github.io/dpv/2.0/dpv/) (DPV) to represent these purposes e.g. `dpv:FraudPreventionAndDetection` or `dpv:RequestedServiceProvision`.
+    * **Scope**: A string representing the specific access rights or actions an API Consumer requests from the User for their data (e.g., "location-verification:verify"). A request can contain multiple scopes.
+
+    # API Functionality
+
+    This Consent Management API provides the following key functionalities:
+
+    - **Create Consent**: Allows API Consumers to create a new Consent for a User, specifying the requested scope(s) and Purpose. The API Consumer must provide the necessary information to capture the User's Consent.
+    - **Update Consent**: Enables API Consumers to update an existing Consent, allowing changes to the Consent status or modifying the expiration date of the Consent.
+    - **Retrieve Consent Information**: Allows API Consumers to retrieve information about existing Consents for a User based on specified scope(s) and Purpose. This operation can also return the Consent texts presented to the User during the Consent Capture process if requested.
+
+    It is important to note that the API Provider remains fully responsible for Consent storage, auditing and transparency. Access to this functionality is restricted to trusted API Consumers in accordance with the API Provider's policy. This API only applies to scenarios involving the legal basis of Consent. Scenarios involving a different legal basis for data processing are excluded and would be handled by the API Provider through non-delegated mechanisms.
+
+    # Authorization and authentication
+
+    The "Camara Security and Interoperability Profile" provides details of how an API consumer requests an access token. Please refer to Identity and Consent Management (https://github.com/camaraproject/IdentityAndConsentManagement/) for the released version of the profile.
+
+    The specific authorization flows to be used will be agreed upon during the onboarding process, happening between the API consumer and the API provider, taking into account the declared Purpose for accessing the API, whilst also being subject to the prevailing legal framework dictated by local legislation.
+
+    In cases where personal data is processed by the API and users can exercise their rights through mechanisms such as opt-in and/or opt-out, the use of three-legged access tokens is mandatory. This ensures that the API remains in compliance with privacy regulations, upholding the principles of transparency and user-centric privacy-by-design.
+
+    # Identifying the phone number from the access token
+
+    This API requires the API consumer to identify a phone number as the subject of the API as follows:
+    - When the API is invoked using a two-legged access token, the subject will be identified from the optional `phoneNumber` field, which therefore MUST be provided.
+    - When a three-legged access token is used however, this optional identifier MUST NOT be provided, as the subject will be uniquely identified from the access token.
+
+    This approach simplifies API usage for API consumers using a three-legged access token to invoke the API by relying on the information that is associated with the access token and was identified during the authentication process.
+
+    ## Error handling:
+
+    - If the subject cannot be identified from the access token and the optional `phoneNumber` field is not included in the request, then the server will return an error with the `422 MISSING_IDENTIFIER` error code.
+
+    - If the subject can be identified from the access token and the optional `phoneNumber` field is also included in the request, then the server will return an error with the `422 UNNECESSARY_IDENTIFIER` error code. This will be the case even if the same phone number is identified by these two methods, as the server is unable to make this comparison.
+
+    # Additional CAMARA error responses
+
+    The list of error codes in this API specification is not exhaustive. Therefore the API specification may not document some non-mandatory error statuses as indicated in `CAMARA API Design Guide`.
+
+    Please refer to the `CAMARA_common.yaml` of the Commonalities Release associated to this API version for a complete list of error responses. The applicable Commonalities Release can be identified in the `API Readiness Checklist` document associated to this API version.
+
+    As a specific rule, error `501 - NOT_IMPLEMENTED` can be only a possible error response if it is explicitly documented in the API.
+
+    # Further info and support
+
+    (FAQs will be added in a later version of the documentation)
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+  version: wip
+  x-camara-commonalities: 0.6
+externalDocs:
+  description: Product documentation at CAMARA
+  url: https://github.com/camaraproject/ConsentInfo
+servers:
+  - url: "{apiRoot}/consent-management/vwip"
+    variables:
+      apiRoot:
+        default: http://localhost:9091
+        description: API root, defined by the service provider, e.g. `api.example.com` or `api.example.com/somepath`
+tags:
+  - name: Consent Management
+    description: Operations to manage User's Consent
+paths:
+  /consents:
+    post:
+      summary: Create User Consent
+      description: |
+        This operation allows the API Consumer to create a Consent for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+      operationId: createConsent
+      security:
+        - openId:
+            - consent-management:create
+      tags:
+        - Consent Management
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
+      requestBody:
+        required: true
+        description: createConsent operation request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConsentRequestBody"
+            examples:
+              CREATE_CONSENT_REQUEST:
+                summary: Create Consent request
+                value:
+                  phoneNumber: "+123456789"
+                  scopes:
+                    - "location-verification:verify"
+                  purpose: "dpv:FraudPreventionAndDetection"
+                  consentStatus: "DENIED"
+                  consentTextId: "pp-sha256-a1b2c3d4..."
+              CREATE_CONSENT_REQUEST_WITH_DATES:
+                summary: Create Consent request with creation and expiration dates
+                value:
+                  phoneNumber: "+123456789"
+                  scopes:
+                    - "number-verification:verify"
+                  purpose: "dpv:FraudPreventionAndDetection"
+                  consentStatus: "GRANTED"
+                  consentTextId: "pp-sha256-a1b2c3d4..."
+                  creationDate: "2025-07-03T14:27:08.312+02:00"
+                  expirationDate: "2026-07-03T14:27:08.312+02:00"            
+      responses:
+        "201":
+          description: Created
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CreateConsentResponseBody"
+              examples:
+                CREATE_CONSENT_RESPONSE:
+                  summary: Create Consent response
+                  value:
+                    consentId: "consent-123456"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Consent403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "409":
+          $ref: "#/components/responses/Generic409"
+        "422":
+          $ref: "#/components/responses/Generic422"
+  /consents/{consentId}:
+    patch:
+      summary: Update User Consent
+      description: |
+        This operation allows the API Consumer to update an existing Consent for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+      operationId: updateConsent
+      security:
+        - openId:
+            - consent-management:update
+      tags:
+        - Consent Management
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
+        - name: consentId
+          in: path
+          required: true
+          description: The unique identifier of the User Consent
+          schema:
+            type: string
+          example: "consent-123456"
+      requestBody:
+        required: true
+        description: updateConsent operation request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateConsentRequestBody"
+            examples:
+              UPDATE_CONSENT_REQUEST_STATUS:
+                summary: Update Consent status
+                value:
+                  consentStatus: "DENIED"
+              UPDATE_CONSENT_REQUEST_EXPIRATION_DATE:
+                summary: Update Consent expiration date
+                value:
+                  expirationDate: "2026-12-31T23:59:59.999+02:00"
+              UPDATE_CONSENT_REQUEST_STATUS_AND_EXPIRATION_DATE:
+                summary: Update Consent status and expiration date
+                value:
+                  consentStatus: "GRANTED"
+                  expirationDate: "2027-12-31T23:59:59.999+02:00"
+      responses:
+        "204":
+          description: No Content
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Generic403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+  /consents/retrieve-info:
+    post:
+      summary: Retrieve Consent Information
+      description: |
+        This operation allows the API Consumer to retrieve information about the Consent(s) for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+
+        The API Consumer can request that the texts intended for or previously shown to the User during the Consent Capture process for the requested scope(s) and Purpose be included in the response. If so, the `ConsentText` field will be included in the response for each matching Consent Information entry.
+
+        The operation response may require more than one array item for the requested scope(s) and Purpose. For example, this may occur when the requested scopes relate to multiple APIs with independent User Consents.
+
+        If the combination of the specified scope(s) and Purpose is permitted for the API Consumer but does not match any API(s) under Consent legal basis, an empty array will be returned. 
+      operationId: retrieveConsentInfo
+      security:
+        - openId:
+            - consent-management:retrieve-info
+      tags:
+        - Consent Management
+      parameters:
+        - $ref: "#/components/parameters/x-correlator"
+        - $ref: "#/components/parameters/Accept-Language"
+      requestBody:
+        required: true
+        description: retrieveConsentInfo operation request body
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RetrieveConsentInfoRequestBody"
+            examples:
+              RETRIEVE_CONSENT_INFO_REQUEST:
+                summary: Retrieve Consent Information request
+                value:
+                  phoneNumber: "+123456789"
+                  scopes:
+                    - "location-verification:verify"
+                  purpose: "dpv:FraudPreventionAndDetection"
+                  requestConsentText: true
+      responses:
+        "200":
+          description: OK
+          headers:
+            x-correlator:
+              $ref: "#/components/headers/x-correlator"
+            Content-Language:
+              $ref: "#/components/headers/Content-Language"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RetrieveConsentInfoResponseBody"
+              examples:
+                RETRIEVE_CONSENT_INFO_PENDING:
+                  summary: Retrieve Consent Information PENDING
+                  description: Retrieve Consent Information when the User Consent is in PENDING status
+                  value:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentStatus: "PENDING"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        consentTextId: "pp-sha256-a1b2c3d4..."
+                RETRIEVE_CONSENT_INFO_REQUESTED:
+                  summary: Retrieve Consent Information REQUESTED
+                  description: Retrieve Consent Information when the User Consent is in REQUESTED status
+                  value:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentId: "consent-123456"
+                      consentStatus: "REQUESTED"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        consentTextId: "pp-sha256-a1b2c3d4..."
+                RETRIEVE_CONSENT_INFO_DENIED:
+                  summary: Retrieve Consent Information DENIED
+                  value:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentId: "consent-123456"
+                      consentStatus: "DENIED"
+                      creationDate: "2025-07-03T14:27:08.312+02:00"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        consentTextId: "pp-sha256-a1b2c3d4..."
+                RETRIEVE_CONSENT_INFO_GRANTED:
+                  summary: Retrieve Consent Information GRANTED
+                  value:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentId: "consent-123456"
+                      consentStatus: "GRANTED"
+                      creationDate: "2025-07-03T14:27:08.312+02:00"
+                      expirationDate: "2026-07-03T14:27:08.312+02:00"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        consentTextId: "pp-sha256-a1b2c3d4..."
+                RETRIEVE_CONSENT_INFO_EXPIRED:
+                  summary: Retrieve Consent Information EXPIRED
+                  value:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentId: "consent-123456"
+                      consentStatus: "EXPIRED"
+                      creationDate: "2025-07-03T14:27:08.312+02:00"
+                      expirationDate: "2025-10-03T14:27:08.312+02:00"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        consentTextId: "pp-sha256-a1b2c3d4..."
+                RETRIEVE_CONSENT_INFO_MULTIPLE_APIS:
+                  summary: Retrieve Consent Information for multiple APIs
+                  description: Retrieve Consent Information when the requested scopes relate to multiple APIs
+                  value:
+                    - scopes:
+                        - "location-verification:verify"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentId: "consent-123456"
+                      consentStatus: "GRANTED"
+                      creationDate: "2025-07-03T14:27:08.312+02:00"
+                      expirationDate: "2026-07-03T14:27:08.312+02:00"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        consentTextId: "pp-sha256-a1b2c3d4..."
+                    - scopes:
+                        - "device-roaming-status:read"
+                      purpose: "dpv:FraudPreventionAndDetection"
+                      consentId: "consent-654321"
+                      consentStatus: "DENIED"
+                      creationDate: "2025-08-15T10:00:00.000+02:00"
+                      ConsentText:
+                        title:
+                          langTag: "en-US"
+                          text: "Consent Required"
+                        description:
+                          langTag: "en-US"
+                          text: "Please provide your consent to proceed with roaming verification for fraud prevention."
+                        consentTextId: "pp-sha256-e5f6g7h8..."
+                RETRIEVE_CONSENT_INFO_EMPTY_ARRAY:
+                  summary: Retrieve Consent Information with no matching Consents
+                  description: Retrieve Consent Information when there are no matching Consents for the specified scope(s) and Purpose
+                  value: []
+        "400":
+          $ref: "#/components/responses/Generic400"
+        "401":
+          $ref: "#/components/responses/Generic401"
+        "403":
+          $ref: "#/components/responses/Consent403"
+        "404":
+          $ref: "#/components/responses/Generic404"
+        "422":
+          $ref: "#/components/responses/Generic422"
+components:
+  headers:
+    x-correlator:
+      description: Correlation id for the different services
+      schema:
+        $ref: "#/components/schemas/XCorrelator"
+    Content-Language:
+      description: |
+        The language of the response content, following the standard defined in [RFC 7231, Section 5.3.5](https://datatracker.ietf.org/doc/html/rfc7231#section-5.3.5) using language tags as defined by [BCP 47](https://tools.ietf.org/html/bcp47).
+
+        This header may be included in the response to indicate the language used for the response content when the API Consumer supplies an `Accept-Language` request header. If supported, the API Provider should select the preferred language indicated in the `Accept-Language` header. If the `Accept-Language` header is not present in the request, this header may instead be included to specify the API Provider’s default response language.
+      schema:
+        $ref: "#/components/schemas/LanguageTags"
+  parameters:
+    x-correlator:
+      name: x-correlator
+      in: header
+      description: Correlation id for the different services
+      schema:
+        $ref: "#/components/schemas/XCorrelator"    
+    Accept-Language:
+      name: Accept-Language
+      in: header
+      description: |
+        The preferred language for the response content. It follows the standard defined in [RFC 7231, Section 5.3.5](https://datatracker.ietf.org/doc/html/rfc7231#section-5.3.5) using language tags as defined by [BCP 47](https://tools.ietf.org/html/bcp47).
+
+        The `Accept-Language` header field can be used by API Consumers to indicate the set of natural languages that are preferred in the response. If not provided, it implies that the API Consumer will accept any language in response and the API Provider will use its default language for the response content.
+      schema:
+        $ref: "#/components/schemas/LanguageTags"
+  schemas:
+    XCorrelator:
+      description: Value for the x-correlator
+      type: string
+      pattern: ^[a-zA-Z0-9-_:;.\/<>{}]{0,256}$
+      example: "b4333c46-49c0-4f62-80d7-f0ef930f1c46"
+    PhoneNumber:
+      type: string
+      description: A public identifier addressing a telephone subscription. In mobile networks it corresponds to the MSISDN (Mobile Station International Subscriber Directory Number). In order to be globally unique it has to be formatted in international format, according to E.164 standard, prefixed with '+'.
+      pattern: '^\+[1-9][0-9]{4,14}$'
+      example: "+123456789"
+    CreateConsentRequestBody:
+      type: object
+      description: |
+        The request body for the createConsent operation. It contains the requested scope(s), the Purpose for which the API Consumer intends to process the User's personal data and optionally the phone number of the User. The phone number is required when the API is invoked using a two-legged access token, but MUST NOT be provided when a three-legged access token is used, as the subject will be uniquely identified from the access token.
+      required:
+        - scopes
+        - purpose
+        - consentStatus
+        - consentTextId
+      properties:
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumber"
+        scopes:
+          $ref: "#/components/schemas/Scopes"
+        purpose:
+          $ref: "#/components/schemas/Purpose"
+        consentStatus:
+          $ref: "#/components/schemas/CreateConsentStatus"
+        consentTextId:
+          $ref: "#/components/schemas/ConsentTextId"
+        creationDate:
+          $ref: "#/components/schemas/CreateConsentCreationDate"
+        expirationDate:
+          $ref: "#/components/schemas/CreateConsentExpirationDate"
+    Scopes:
+      type: array
+      minItems: 1
+      items:
+        type: string
+      description: |
+        List of requested scopes. The scope is a string that represents the access rights that the API Consumer is requesting from the User.
+      example:
+        - "location-verification:verify"
+    Purpose:
+      type: string
+      pattern: '^dpv:[a-zA-Z0-9]+$'
+      description: |
+        The reason for which personal data will be processed by the API Consumer. CAMARA defines a standard set of Purposes which can be used by API Consumers to specify the reason for their intended personal data processing. CAMARA uses the [W3C Data Privacy Vocabulary](https://w3c.github.io/dpv/2.0/dpv/) (DPV) to represent these purposes e.g. `dpv:FraudPreventionAndDetection` or `dpv:RequestedServiceProvision`.
+      example: "dpv:FraudPreventionAndDetection"
+    CreateConsentStatus:
+      type: string
+      description: |
+        The status of the User Consent being created. It must represent the final outcome resulting from the Consent Capture process with the User. The only allowed values are `GRANTED` and `DENIED` when creating a Consent.
+
+        - `GRANTED`: The User has given their Consent to allow the requested data processing.
+        - `DENIED`: The User has refused to give their Consent for the requested data processing.   
+      enum:
+        - GRANTED
+        - DENIED
+      example: "GRANTED"
+    CreateConsentCreationDate:
+      type: string
+      format: date-time
+      description: |
+        The date and time at which the User Consent was captured. If not provided, the API Provider will set it to the current date and time. 
+        
+        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+      example: "2025-07-03T14:27:08.312+02:00"
+    CreateConsentExpirationDate:
+      type: string
+      format: date-time
+      description: |
+        The date and time at which the validity of the User Consent is set to expire. If not provided, the API Provider's default expiration policy will apply.
+        
+        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+      example: "2026-07-03T14:27:08.312+02:00"
+    CreateConsentResponseBody:
+      type: object
+      description: The response body for the createConsent operation
+      required:
+        - consentId
+      properties:
+        consentId:
+          type: string
+          description: The unique identifier of the User Consent
+          example: "consent-123456"
+    UpdateConsentRequestBody:
+      type: object
+      description: |
+        The request body for the updateConsent operation. It allows updating the status and/or the expiration date of an existing User Consent.
+      properties:
+        consentStatus:
+          $ref: "#/components/schemas/UpdateConsentStatus"
+        expirationDate:
+          $ref: "#/components/schemas/UpdateExpirationDate"
+    UpdateConsentStatus:
+      type: string
+      description: |
+        The status of the User Consent being updated. The only allowed values are `GRANTED` and `DENIED` when updating a Consent.
+
+        - `GRANTED`: The User has given their Consent to allow the requested data processing e.g. after previously denying it or when renewing an expired Consent.
+        - `DENIED`: The User has refused to give their Consent for the requested data processing.
+      enum:
+        - GRANTED
+        - DENIED
+      example: "DENIED"
+    UpdateExpirationDate:
+      type: string
+      format: date-time
+      description: |
+        The date and time at which the validity of the User Consent is set to expire. 
+        
+        In case of an update, this field is only applicable to extend or reduce the expiration date of an existing granted Consent, and the new expiration date must be later than the current date and time. 
+        
+        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+    RetrieveConsentInfoRequestBody:
+      type: object
+      description: |
+        The request body for the retrieveConsentInfo operation. It contains the requested scope(s), the Purpose for which the API Consumer intends to process the User's personal data and optionally the phone number of the User. The phone number is required when the API is invoked using a two-legged access token, but MUST NOT be provided when a three-legged access token is used, as the subject will be uniquely identified from the access token.
+      required:
+        - scopes
+        - purpose
+        - requestConsentText
+      properties:
+        phoneNumber:
+          $ref: "#/components/schemas/PhoneNumber"
+        scopes:
+          $ref: "#/components/schemas/Scopes"
+        purpose:
+          $ref: "#/components/schemas/Purpose"
+        requestConsentText:
+          type: boolean
+          description: |
+            Indicates whether the texts intended for or previously shown to the User during the Consent Capture process for the requested scope(s) and Purpose should be included in the response. 
+
+            If set to `true`, the `ConsentText` field will be included in the response for each matching Consent Information entry. If set to `false`, the `ConsentText` field will be omitted from the response.
+          example: true
+    RetrieveConsentInfoResponseBody:
+      type: array
+      description: The response body for the retrieveConsentInfo operation 
+      items:
+        $ref: "#/components/schemas/ConsentInfoItem"
+    ConsentInfoItem:
+      type: object
+      required:
+        - scopes
+        - purpose
+        - consentStatus
+      properties:
+        scopes:
+          $ref: "#/components/schemas/Scopes"
+        purpose:
+          $ref: "#/components/schemas/Purpose"
+        consentId:
+          type: string
+          description: The unique identifier of the User Consent
+          example: "consent-123456"
+        consentStatus:
+          $ref: "#/components/schemas/ConsentStatus"
+        ConsentText:
+          $ref: "#/components/schemas/ConsentText"
+        creationDate:
+          $ref: "#/components/schemas/CreationDate"
+        expirationDate:
+          $ref: "#/components/schemas/ExpirationDate"
+    ConsentStatus:
+      type: string
+      description: |
+        The status of the User Consent. The allowed values are:
+
+        - `PENDING`: The User Consent is pending and has not yet been requested from the User.
+        - `REQUESTED`: The User Consent has been requested from the User, but the User has not yet responded.
+        - `GRANTED`: The User has given their Consent to allow the requested data processing.
+        - `DENIED`: The User has refused to give their Consent for the requested data processing.
+        - `EXPIRED`: The User Consent has expired and is no longer valid.
+      enum:
+        - PENDING
+        - REQUESTED
+        - GRANTED
+        - DENIED
+        - EXPIRED
+      example: "GRANTED"
+    ConsentText:
+      type: object
+      description: |
+        The texts presented to the User during the Consent Capture process for the requested scope(s) and Purpose. 
+        
+        It is composed of a title and a description, both of which are localized texts provided in the language indicated by the `Content-Language` response header (if present). There is also a unique, immutable string identifier, called a `consentTextId`, that designates a specific, versioned instance of a legal text.
+        
+        These texts are only included in the response when explicitly requested by setting the `requestConsentText` field to `true` in the request.
+      required:
+        - title
+        - description
+        - consentTextId
+      properties:
+        title:
+          type: string
+          description: The localized text title
+          example: "Consent Required"
+        description:
+          type: string
+          description: The localized text description
+          example: "Please provide your consent to proceed with location verification for fraud prevention."
+        consentTextId:
+          $ref: "#/components/schemas/ConsentTextId"
+    LanguageTags:
+      type: string
+      description: List of Language tags that identify natural languages, following [BCP 47](https://tools.ietf.org/html/bcp47) standard.
+      example: "en-US"
+    ConsentTextId:
+      type: string
+      description: |
+        This is a unique, immutable (e.g. hash-based) string identifier that designates a specific version of a legal text presented to the User during the Consent Capture process.
+
+        The API consumer MUST submit this exact, unaltered identifier when creating a User Consent.
+
+        This identifier creates a traceable, auditable link that binds a User's Consent to the specific textual content they were shown.
+      example: "pp-sha256-a1b2c3d4..."
+    CreationDate:
+      type: string
+      format: date-time
+      description: |
+        The date and time at which the User Consent was captured. 
+        
+        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+      example: "2025-07-03T14:27:08.312+02:00"
+    ExpirationDate:
+      type: string
+      format: date-time
+      description: |
+        The date and time at which the validity of the User Consent is set to expire or has expired.
+
+        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+      example: "2026-07-03T14:27:08.312+02:00"
+    ErrorInfo:
+      type: object
+      required:
+        - status
+        - code
+        - message
+      properties:
+        status:
+          type: integer
+          description: HTTP response status code
+        code:
+          type: string
+          description: A human-readable code to describe the error
+        message:
+          type: string
+          description: A human-readable description of what the event represents
+  responses:
+    Generic400:
+      description: Bad Request
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 400
+                  code:
+                    enum:
+                      - INVALID_ARGUMENT
+          examples:
+            GENERIC_400_INVALID_ARGUMENT:
+              description: Invalid Argument. Generic Syntax Exception
+              value:
+                status: 400
+                code: INVALID_ARGUMENT
+                message: Client specified an invalid argument, request body or query param.
+    Generic401:
+      description: Unauthorized
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 401
+                  code:
+                    enum:
+                      - UNAUTHENTICATED
+          examples:
+            GENERIC_401_UNAUTHENTICATED:
+              description: Request cannot be authenticated
+              value:
+                status: 401
+                code: UNAUTHENTICATED
+                message: Request not authenticated due to missing, invalid, or expired credentials. A new authentication is required.
+    Generic403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+    Consent403:
+      description: Forbidden
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 403
+                  code:
+                    enum:
+                      - PERMISSION_DENIED
+                      - CONSENT_MGMT.NOT_ALLOWED_SCOPES_PURPOSE
+          examples:
+            GENERIC_403_PERMISSION_DENIED:
+              description: Permission denied. OAuth2 token access does not have the required scope or when the user fails operational security
+              value:
+                status: 403
+                code: PERMISSION_DENIED
+                message: Client does not have sufficient permissions to perform this action.
+            NOT_ALLOWED_SCOPES_PURPOSE:
+              description: The requested scope(s) and Purpose combination is not allowed for the API Consumer, e.g. the API Consumer has not onboarded the appropriate API(s) with the API Provider for the declared Purpose.
+              value:
+                status: 403
+                code: CONSENT_MGMT.NOT_ALLOWED_SCOPES_PURPOSE
+                message: The requested scope(s) and Purpose combination is not allowed for this API Consumer.
+    Generic404:
+      description: Not found
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 404
+                  code:
+                    enum:
+                      - NOT_FOUND
+                      - IDENTIFIER_NOT_FOUND
+          examples:
+            GENERIC_404_NOT_FOUND:
+              description: Resource is not found
+              value:
+                status: 404
+                code: NOT_FOUND
+                message: The specified resource is not found.
+            GENERIC_404_IDENTIFIER_NOT_FOUND:
+              description: Some identifier cannot be matched to a device
+              value:
+                status: 404
+                code: IDENTIFIER_NOT_FOUND
+                message: Phone number not found.
+    Generic409:
+      description: Conflict
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 409
+                  code:
+                    enum:
+                      - ALREADY_EXISTS
+          examples:
+            GENERIC_409_ALREADY_EXISTS:
+              description: Trying to create an existing resource
+              value:
+                status: 409
+                code: ALREADY_EXISTS
+                message: The resource that a client tried to create already exists.
+    Generic422:
+      description: Unprocessable Content
+      headers:
+        x-correlator:
+          $ref: "#/components/headers/x-correlator"
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/ErrorInfo"
+              - type: object
+                properties:
+                  status:
+                    enum:
+                      - 422
+                  code:
+                    enum:
+                      - SERVICE_NOT_APPLICABLE
+                      - MISSING_IDENTIFIER
+                      - UNNECESSARY_IDENTIFIER
+          examples:
+            GENERIC_422_SERVICE_NOT_APPLICABLE:
+              description: Service not applicable for the provided identifier
+              value:
+                status: 422
+                code: SERVICE_NOT_APPLICABLE
+                message: The service is not available for the provided phone number.
+            GENERIC_422_MISSING_IDENTIFIER:
+              description: An identifier is not included in the request and the device or phone number identification cannot be derived from the 3-legged access token
+              value:
+                status: 422
+                code: MISSING_IDENTIFIER
+                message: The phone number cannot be identified.
+            GENERIC_422_UNNECESSARY_IDENTIFIER:
+              description: An explicit identifier is provided when a device or phone number has already been identified from the access token
+              value:
+                status: 422
+                code: UNNECESSARY_IDENTIFIER
+                message: The phone number is already identified by the access token.
+  securitySchemes:
+    openId:
+      type: openIdConnect
+      openIdConnectUrl: https://example.org/.well-known/openid-configuration
