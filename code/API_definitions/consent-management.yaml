@@ -258,12 +258,8 @@ paths:
                       purpose: "dpv:FraudPreventionAndDetection"
                       consentStatus: "PENDING"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with location verification for fraud prevention."
                         consentTextId: "pp-sha256-a1b2c3d4..."
                 RETRIEVE_CONSENT_INFO_REQUESTED:
                   summary: Retrieve Consent Information REQUESTED
@@ -275,12 +271,8 @@ paths:
                       consentId: "consent-123456"
                       consentStatus: "REQUESTED"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with location verification for fraud prevention."
                         consentTextId: "pp-sha256-a1b2c3d4..."
                 RETRIEVE_CONSENT_INFO_DENIED:
                   summary: Retrieve Consent Information DENIED
@@ -292,12 +284,8 @@ paths:
                       consentStatus: "DENIED"
                       creationDate: "2025-07-03T14:27:08.312+02:00"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with location verification for fraud prevention."
                         consentTextId: "pp-sha256-a1b2c3d4..."
                 RETRIEVE_CONSENT_INFO_GRANTED:
                   summary: Retrieve Consent Information GRANTED
@@ -310,12 +298,8 @@ paths:
                       creationDate: "2025-07-03T14:27:08.312+02:00"
                       expirationDate: "2026-07-03T14:27:08.312+02:00"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with location verification for fraud prevention."
                         consentTextId: "pp-sha256-a1b2c3d4..."
                 RETRIEVE_CONSENT_INFO_EXPIRED:
                   summary: Retrieve Consent Information EXPIRED
@@ -328,12 +312,8 @@ paths:
                       creationDate: "2025-07-03T14:27:08.312+02:00"
                       expirationDate: "2025-10-03T14:27:08.312+02:00"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with location verification for fraud prevention."
                         consentTextId: "pp-sha256-a1b2c3d4..."
                 RETRIEVE_CONSENT_INFO_MULTIPLE_APIS:
                   summary: Retrieve Consent Information for multiple APIs
@@ -347,12 +327,8 @@ paths:
                       creationDate: "2025-07-03T14:27:08.312+02:00"
                       expirationDate: "2026-07-03T14:27:08.312+02:00"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with location verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with location verification for fraud prevention."
                         consentTextId: "pp-sha256-a1b2c3d4..."
                     - scopes:
                         - "device-roaming-status:read"
@@ -361,12 +337,8 @@ paths:
                       consentStatus: "DENIED"
                       creationDate: "2025-08-15T10:00:00.000+02:00"
                       ConsentText:
-                        title:
-                          langTag: "en-US"
-                          text: "Consent Required"
-                        description:
-                          langTag: "en-US"
-                          text: "Please provide your consent to proceed with roaming verification for fraud prevention."
+                        title: "Consent Required"
+                        description: "Please provide your consent to proceed with roaming verification for fraud prevention."
                         consentTextId: "pp-sha256-e5f6g7h8..."
                 RETRIEVE_CONSENT_INFO_EMPTY_ARRAY:
                   summary: Retrieve Consent Information with no matching Consents
