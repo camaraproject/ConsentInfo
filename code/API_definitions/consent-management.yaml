@@ -6,8 +6,8 @@ info:
 
     # Introduction
 
-    In the context of CAMARA, Consent Management refers to the processes and mechanisms that allow API Consumers to obtain, manage, and verify User Consents for accessing and processing personal data through CAMARA APIs. This API specification defines the operations and data structures necessary for API Consumers to interact with Consent Management services provided by API Providers. 
-    
+    In the context of CAMARA, Consent Management refers to the processes and mechanisms that allow API Consumers to obtain, manage, and verify User Consents for accessing and processing personal data through CAMARA APIs. This API specification defines the operations and data structures necessary for API Consumers to interact with Consent Management services provided by API Providers.
+
     This optional, controlled delegation model enables trusted API Consumers to capture the User Consent directly within their own applications using Consent texts and parameters provided by API Providers. This model aims to streamline the User Consent capture process, enhance User experience, and ensure compliance with data protection regulations by leveraging API Provider-verified Consent texts.
 
     # Relevant terms and definitions
@@ -117,7 +117,7 @@ paths:
                   consentStatus: "GRANTED"
                   consentTextId: "pp-sha256-a1b2c3d4..."
                   creationDate: "2025-07-03T14:27:08.312+02:00"
-                  expirationDate: "2026-07-03T14:27:08.312+02:00"            
+                  expirationDate: "2026-07-03T14:27:08.312+02:00"
       responses:
         "201":
           description: Created
@@ -210,7 +210,7 @@ paths:
 
         The operation response may require more than one array item for the requested scope(s) and Purpose. For example, this may occur when the requested scopes relate to multiple APIs with independent User Consents.
 
-        If the combination of the specified scope(s) and Purpose is permitted for the API Consumer but does not match any API(s) under Consent legal basis, an empty array will be returned. 
+        If the combination of the specified scope(s) and Purpose is permitted for the API Consumer but does not match any API(s) under Consent legal basis, an empty array will be returned.
       operationId: retrieveConsentInfo
       security:
         - openId:
@@ -401,7 +401,7 @@ components:
       in: header
       description: Correlation id for the different services
       schema:
-        $ref: "#/components/schemas/XCorrelator"    
+        $ref: "#/components/schemas/XCorrelator"
     Accept-Language:
       name: Accept-Language
       in: header
@@ -467,7 +467,7 @@ components:
         The status of the User Consent being created. It must represent the final outcome resulting from the Consent Capture process with the User. The only allowed values are `GRANTED` and `DENIED` when creating a Consent.
 
         - `GRANTED`: The User has given their Consent to allow the requested data processing.
-        - `DENIED`: The User has refused to give their Consent for the requested data processing.   
+        - `DENIED`: The User has refused to give their Consent for the requested data processing.
       enum:
         - GRANTED
         - DENIED
@@ -476,8 +476,8 @@ components:
       type: string
       format: date-time
       description: |
-        The date and time at which the User Consent was captured. If not provided, the API Provider will set it to the current date and time. 
-        
+        The date and time at which the User Consent was captured. If not provided, the API Provider will set it to the current date and time.
+
         It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
       example: "2025-07-03T14:27:08.312+02:00"
     CreateConsentExpirationDate:
@@ -485,7 +485,7 @@ components:
       format: date-time
       description: |
         The date and time at which the validity of the User Consent is set to expire. If not provided, the API Provider's default expiration policy will apply.
-        
+
         It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
       example: "2026-07-03T14:27:08.312+02:00"
     CreateConsentResponseBody:
@@ -522,10 +522,10 @@ components:
       type: string
       format: date-time
       description: |
-        The date and time at which the validity of the User Consent is set to expire. 
-        
-        In case of an update, this field is only applicable to extend or reduce the expiration date of an existing granted Consent, and the new expiration date must be later than the current date and time. 
-        
+        The date and time at which the validity of the User Consent is set to expire.
+
+        In case of an update, this field is only applicable to extend or reduce the expiration date of an existing granted Consent, and the new expiration date must be later than the current date and time.
+
         It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
     RetrieveConsentInfoRequestBody:
       type: object
@@ -545,13 +545,13 @@ components:
         requestConsentText:
           type: boolean
           description: |
-            Indicates whether the texts intended for or previously shown to the User during the Consent Capture process for the requested scope(s) and Purpose should be included in the response. 
+            Indicates whether the texts intended for or previously shown to the User during the Consent Capture process for the requested scope(s) and Purpose should be included in the response.
 
             If set to `true`, the `ConsentText` field will be included in the response for each matching Consent Information entry. If set to `false`, the `ConsentText` field will be omitted from the response.
           example: true
     RetrieveConsentInfoResponseBody:
       type: array
-      description: The response body for the retrieveConsentInfo operation 
+      description: The response body for the retrieveConsentInfo operation
       items:
         $ref: "#/components/schemas/ConsentInfoItem"
     ConsentInfoItem:
@@ -597,10 +597,10 @@ components:
     ConsentText:
       type: object
       description: |
-        The texts presented to the User during the Consent Capture process for the requested scope(s) and Purpose. 
-        
+        The texts presented to the User during the Consent Capture process for the requested scope(s) and Purpose.
+
         It is composed of a title and a description, both of which are localized texts provided in the language indicated by the `Content-Language` response header (if present). There is also a unique, immutable string identifier, called a `consentTextId`, that designates a specific, versioned instance of a legal text.
-        
+
         These texts are only included in the response when explicitly requested by setting the `requestConsentText` field to `true` in the request.
       required:
         - title
@@ -634,8 +634,8 @@ components:
       type: string
       format: date-time
       description: |
-        The date and time at which the User Consent was captured. 
-        
+        The date and time at which the User Consent was captured.
+
         It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
       example: "2025-07-03T14:27:08.312+02:00"
     ExpirationDate:
