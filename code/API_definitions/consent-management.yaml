@@ -21,7 +21,7 @@ info:
     This Consent Management API provides the following key functionalities:
 
     - **Create Consent**: Allows API Consumers to create a new Consent for a User, specifying the requested scope(s) and Purpose. The API Consumer must provide the necessary information to capture the User's Consent.
-    - **Update Consent**: Enables API Consumers to update an existing Consent, allowing changes to the Consent status or modifying the expiration date of the Consent.
+    - **Update Consent**: Enables API Consumers to update an existing Consent and change its status.
     - **Retrieve Consent Information**: Allows API Consumers to retrieve information about existing Consents for a User based on specified scope(s) and Purpose. This operation can also return the Consent texts presented to the User during the Consent Capture process if requested.
 
     It is important to note that the API Provider remains fully responsible for Consent storage, auditing and transparency. Access to this functionality is restricted to trusted API Consumers in accordance with the API Provider's policy. This API only applies to scenarios involving the legal basis of Consent. Scenarios involving a different legal basis for data processing are excluded and would be handled by the API Provider through non-delegated mechanisms.
@@ -82,6 +82,10 @@ paths:
       summary: Create User Consent
       description: |
         This operation allows the API Consumer to create a Consent for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+
+        The API Provider will set the creation date of the User Consent to the current date and time when the `createConsent` operation is invoked successfully by the API Consumer.
+
+        The expiration date of the User Consent created by the API Consumer will be determined by the API Provider's internal policies. The API Consumer cannot set or modify the expiration date of the User Consents captured in a delegated manner.
       operationId: createConsent
       security:
         - openId:
@@ -98,17 +102,8 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateConsentRequestBody"
             examples:
-              CREATE_CONSENT_REQUEST:
-                summary: Create Consent request
-                value:
-                  phoneNumber: "+123456789"
-                  scopes:
-                    - "location-verification:verify"
-                  purpose: "dpv:FraudPreventionAndDetection"
-                  consentStatus: "DENIED"
-                  consentTextId: "pp-sha256-a1b2c3d4..."
-              CREATE_CONSENT_REQUEST_WITH_DATES:
-                summary: Create Consent request with creation and expiration dates
+              CREATE_CONSENT_REQUEST_GRANTED:
+                summary: Create Consent request with status GRANTED
                 value:
                   phoneNumber: "+123456789"
                   scopes:
@@ -116,8 +111,15 @@ paths:
                   purpose: "dpv:FraudPreventionAndDetection"
                   consentStatus: "GRANTED"
                   consentTextId: "pp-sha256-a1b2c3d4..."
-                  creationDate: "2025-07-03T14:27:08.312+02:00"
-                  expirationDate: "2026-07-03T14:27:08.312+02:00"
+              CREATE_CONSENT_REQUEST_DENIED:
+                summary: Create Consent request with status DENIED
+                value:
+                  phoneNumber: "+123456789"
+                  scopes:
+                    - "location-verification:verify"
+                  purpose: "dpv:FraudPreventionAndDetection"
+                  consentStatus: "DENIED"
+                  consentTextId: "pp-sha256-a1b2c3d4..."
       responses:
         "201":
           description: Created
@@ -133,6 +135,13 @@ paths:
                   summary: Create Consent response
                   value:
                     consentId: "consent-123456"
+                    creationDate: "2025-07-03T14:27:08.312+02:00"
+                CREATE_CONSENT_RESPONSE_EXPIRATION_DATE:
+                  summary: Create Consent response with expiration date
+                  value:
+                    consentId: "consent-123456"
+                    creationDate: "2025-07-03T14:27:08.312+02:00"
+                    expirationDate: "2026-07-03T14:27:08.312+02:00"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -149,7 +158,9 @@ paths:
     patch:
       summary: Update User Consent
       description: |
-        This operation allows the API Consumer to update an existing Consent for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+        This operation allows the API Consumer to update the status of an existing Consent for a given User, scope(s) and Purpose. The API Consumer is identified by the `client_id` parameter deduced from the access token.
+
+        The expiration date of the User Consent updated by the API Consumer will be determined by the API Provider's internal policies. The API Consumer cannot set or modify the expiration date of the User Consents captured in a delegated manner.
       operationId: updateConsent
       security:
         - openId:
@@ -173,25 +184,36 @@ paths:
             schema:
               $ref: "#/components/schemas/UpdateConsentRequestBody"
             examples:
-              UPDATE_CONSENT_REQUEST_STATUS:
-                summary: Update Consent status
+              UPDATE_CONSENT_REQUEST_DENIED:
+                summary: Update Consent status to DENIED
                 value:
                   consentStatus: "DENIED"
-              UPDATE_CONSENT_REQUEST_EXPIRATION_DATE:
-                summary: Update Consent expiration date
-                value:
-                  expirationDate: "2026-12-31T23:59:59.999+02:00"
-              UPDATE_CONSENT_REQUEST_STATUS_AND_EXPIRATION_DATE:
-                summary: Update Consent status and expiration date
+              UPDATE_CONSENT_REQUEST_GRANTED:
+                summary: Update Consent status to GRANTED
                 value:
                   consentStatus: "GRANTED"
-                  expirationDate: "2027-12-31T23:59:59.999+02:00"
       responses:
-        "204":
-          description: No Content
+        "200":
+          description: OK
           headers:
             x-correlator:
               $ref: "#/components/headers/x-correlator"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateConsentResponseBody"
+              examples:
+                UPDATE_CONSENT_RESPONSE:
+                  summary: Update Consent response
+                  value:
+                    consentId: "consent-123456"
+                    creationDate: "2025-07-03T14:27:08.312+02:00"
+                UPDATE_CONSENT_RESPONSE_EXPIRATION_DATE:
+                  summary: Update Consent response with expiration date
+                  value:
+                    consentId: "consent-123456"
+                    creationDate: "2025-07-03T14:27:08.312+02:00"
+                    expirationDate: "2026-07-03T14:27:08.312+02:00"
         "400":
           $ref: "#/components/responses/Generic400"
         "401":
@@ -270,6 +292,7 @@ paths:
                       purpose: "dpv:FraudPreventionAndDetection"
                       consentId: "consent-123456"
                       consentStatus: "REQUESTED"
+                      creationDate: "2025-07-03T14:27:08.312+02:00"
                       ConsentText:
                         title: "Consent Required"
                         description: "Please provide your consent to proceed with location verification for fraud prevention."
@@ -414,10 +437,6 @@ components:
           $ref: "#/components/schemas/CreateConsentStatus"
         consentTextId:
           $ref: "#/components/schemas/ConsentTextId"
-        creationDate:
-          $ref: "#/components/schemas/CreateConsentCreationDate"
-        expirationDate:
-          $ref: "#/components/schemas/CreateConsentExpirationDate"
     Scopes:
       type: array
       minItems: 1
@@ -444,41 +463,28 @@ components:
         - GRANTED
         - DENIED
       example: "GRANTED"
-    CreateConsentCreationDate:
-      type: string
-      format: date-time
-      description: |
-        The date and time at which the User Consent was captured. If not provided, the API Provider will set it to the current date and time.
-
-        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-      example: "2025-07-03T14:27:08.312+02:00"
-    CreateConsentExpirationDate:
-      type: string
-      format: date-time
-      description: |
-        The date and time at which the validity of the User Consent is set to expire. If not provided, the API Provider's default expiration policy will apply.
-
-        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
-      example: "2026-07-03T14:27:08.312+02:00"
     CreateConsentResponseBody:
       type: object
       description: The response body for the createConsent operation
       required:
         - consentId
+        - creationDate
       properties:
         consentId:
           type: string
           description: The unique identifier of the User Consent
           example: "consent-123456"
+        creationDate:
+          $ref: "#/components/schemas/CreationDate"
+        expirationDate:
+          $ref: "#/components/schemas/ExpirationDate"
     UpdateConsentRequestBody:
       type: object
       description: |
-        The request body for the updateConsent operation. It allows updating the status and/or the expiration date of an existing User Consent.
+        The request body for the updateConsent operation. It allows updating the status of an existing User Consent.
       properties:
         consentStatus:
           $ref: "#/components/schemas/UpdateConsentStatus"
-        expirationDate:
-          $ref: "#/components/schemas/UpdateExpirationDate"
     UpdateConsentStatus:
       type: string
       description: |
@@ -490,15 +496,21 @@ components:
         - GRANTED
         - DENIED
       example: "DENIED"
-    UpdateExpirationDate:
-      type: string
-      format: date-time
-      description: |
-        The date and time at which the validity of the User Consent is set to expire.
-
-        In case of an update, this field is only applicable to extend or reduce the expiration date of an existing granted Consent, and the new expiration date must be later than the current date and time.
-
-        It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
+    UpdateConsentResponseBody:
+      type: object
+      description: The response body for the updateConsent operation
+      required:
+        - consentId
+        - creationDate
+      properties:
+        consentId:
+          type: string
+          description: The unique identifier of the User Consent
+          example: "consent-123456"
+        creationDate:
+          $ref: "#/components/schemas/CreationDate"
+        expirationDate:
+          $ref: "#/components/schemas/ExpirationDate"
     RetrieveConsentInfoRequestBody:
       type: object
       description: |
@@ -606,7 +618,7 @@ components:
       type: string
       format: date-time
       description: |
-        The date and time at which the User Consent was captured.
+        The date and time at which the User Consent was created.
 
         It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
       example: "2025-07-03T14:27:08.312+02:00"
@@ -614,7 +626,7 @@ components:
       type: string
       format: date-time
       description: |
-        The date and time at which the validity of the User Consent is set to expire or has expired.
+        The date and time at which the validity of the User Consent is set to expire or has expired (when applicable). The API Provider determines the expiration date based on its internal policies.
 
         It must follow [RFC 3339](https://datatracker.ietf.org/doc/html/rfc3339#section-5.6) and must have time zone. Recommended format is yyyy-MM-dd'T'HH:mm:ss.SSSZ (i.e. which allows 2023-07-03T14:27:08.312+02:00 or 2023-07-03T12:27:08.312Z).
       example: "2026-07-03T14:27:08.312+02:00"
