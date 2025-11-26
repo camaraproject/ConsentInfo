@@ -306,6 +306,7 @@ paths:
                       consentId: "consent-123456"
                       consentStatus: "DENIED"
                       creationDate: "2025-07-03T14:27:08.312+02:00"
+                      expirationDate: "2026-07-03T14:27:08.312+02:00"
                       ConsentText:
                         title: "Consent Required"
                         description: "Please provide your consent to proceed with location verification for fraud prevention."
@@ -359,13 +360,14 @@ paths:
                       consentId: "consent-654321"
                       consentStatus: "DENIED"
                       creationDate: "2025-08-15T10:00:00.000+02:00"
+                      expirationDate: "2026-08-15T10:00:00.000+02:00"
                       ConsentText:
                         title: "Consent Required"
                         description: "Please provide your consent to proceed with roaming verification for fraud prevention."
                         consentTextId: "pp-sha256-e5f6g7h8..."
                 RETRIEVE_CONSENT_INFO_EMPTY_ARRAY:
-                  summary: Retrieve Consent Information with no matching Consents
-                  description: Retrieve Consent Information when there are no matching Consents for the specified scope(s) and Purpose
+                  summary: Retrieve Consent Information with no matching API(s) under Consent legal basis
+                  description: Retrieve Consent Information when there are no matching API(s) under Consent legal basis for the specified scope(s) and Purpose
                   value: []
         "400":
           $ref: "#/components/responses/Generic400"
