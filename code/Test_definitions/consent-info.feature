@@ -5,7 +5,11 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
   # *
   #
   # Testing assets:
-  # *
+  # * phone number with allowed data processing for certain scope(s) and purpose
+  # * phone number with not allowed data processing for certain scope(s) and purpose
+  # * phone number with allowed data processing for certain scope(s) and purpose with an expiration date
+  # * phone number with not allowed data processing for certain scope(s) and purpose because it has expired
+  # * phone number with not allowed data processing for certain scope(s) and purpose because Consent is pending, requested or expired
   #
   # References to OAS spec schemas refer to schemas specified in consent-info.yaml
 
@@ -35,6 +39,7 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     Given a valid phone number identified by the token or provided in the request body
     And the request body property "$.scopes" is set to a valid scope list
     And the request body property "$.purpose" is set to a valid purpose for the requested scope(s)
+    And the data processing is allowed for the requested scope(s) and purpose
     When the request "retrieveStatus" is sent
     Then the response status code is 200
     And the response body complies with the OAS schema at "/components/schemas/retrieveStatusResponseBody"
@@ -47,6 +52,7 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     Given a valid phone number identified by the token or provided in the request body
     And the request body property "$.scopes" is set to a valid scope list
     And the request body property "$.purpose" is set to a valid purpose for the requested scope(s)
+    And the data processing is not allowed for the requested scope(s) and purpose
     When the request "retrieveStatus" is sent
     Then the response status code is 200
     And the response body complies with the OAS schema at "/components/schemas/retrieveStatusResponseBody"
@@ -61,6 +67,7 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     Given a valid phone number identified by the token or provided in the request body
     And the request body property "$.scopes" is set to a valid scope list
     And the request body property "$.purpose" is set to a valid purpose for the requested scope(s)
+    And the data processing is allowed for the requested scope(s) and purpose with an expiration date
     When the request "retrieveStatus" is sent
     Then the response status code is 200
     And the response body complies with the OAS schema at "/components/schemas/retrieveStatusResponseBody"
@@ -75,6 +82,7 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     Given a valid phone number identified by the token or provided in the request body
     And the request body property "$.scopes" is set to a valid scope list
     And the request body property "$.purpose" is set to a valid purpose for the requested scope(s)
+    And the data processing is not allowed for the requested scope(s) and purpose because it has expired
     When the request "retrieveStatus" is sent
     Then the response status code is 200
     And the response body complies with the OAS schema at "/components/schemas/retrieveStatusResponseBody"
@@ -90,6 +98,7 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     And the request body property "$.requestCaptureUrl" is set to true
     And the request body property "$.scopes" is set to a valid scope list
     And the request body property "$.purpose" is set to a valid purpose for the requested scope(s)
+    And the data processing is not allowed for the requested scope(s) and purpose because Consent is pending, requested or expired
     When the request "retrieveStatus" is sent
     Then the response status code is 200
     And the response body complies with the OAS schema at "/components/schemas/retrieveStatusResponseBody"
@@ -98,6 +107,29 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     And the response property "$.statusInfo[*].statusValidForProcessing" is false
     And the response property "$.statusInfo[*].statusReason" is "PENDING", "REQUESTED" or "EXPIRED"
     And the response property "$.captureUrl" is present and it contains a valid URL
+
+  # Callback scenarios
+
+  @consent_info_retrieveStatus_07_callback
+  Scenario: API Consumer requests a callback URL to which the User shall be redirected once the Consent Capture process ends
+    Given a prior "retrieveStatus" request where the API Consumer requested a Consent capture URL
+    And the request body property "$.callbackUrl" was set to a valid URL belonging to the API Consumer
+    And the response property "$.captureUrl" is present and it contains a valid URL
+    When the User is redirected to the Consent capture URL
+    And the Consent Capture process reach a final state
+    Then the API Consumer receives a redirection to the callback URL provided in the original "retrieveStatus" request
+    And the redirection includes a query parameter "capture_result" with a valid capture result value
+
+  @consent_info_retrieveStatus_08_callback_state
+  Scenario: API Consumer requests a callback URL and includes a `state` query parameter when opening the Consent Capture URL
+    Given a prior "retrieveStatus" request where the API Consumer requested a Consent capture URL
+    And the request body property "$.callbackUrl" was set to a valid URL belonging to the API Consumer
+    And the response property "$.captureUrl" is present and it contains a valid URL
+    When the User is redirected to the Consent capture URL including a query parameter "state" with a valid value
+    And the Consent Capture process reach a final state
+    Then the API Consumer receives a redirection to the callback URL provided in the original "retrieveStatus" request
+    And the redirection includes a query parameter "capture_result" with a valid capture result value
+    And the redirection includes a query parameter "state" with the same value as provided when opening the Consent Capture URL
 
   # Error scenarios for management of input parameter phoneNumber
 
@@ -264,4 +296,15 @@ Feature: CAMARA Consent Info API, vwip - Operation retrieveStatus
     Then the response status code is 403
     And the response property "$.status" is 403
     And the response property "$.code" is "CONSENT_INFO.CAPTURE_FREQUENCY_EXCEEDED"
+    And the response property "$.message" contains a user friendly text
+
+  @consent_info_retrieveStatus_03_invalid_callback_url
+  # e.g. the provided callback URL does not pass the validations performed by the API Provider
+  Scenario: The provided callback URL is invalid
+    Given a valid phone number identified by the token or provided in the request body
+    And the request body property "$.callbackUrl" is set to an invalid URL
+    When the request "retrieveStatus" is sent
+    Then the response status code is 403
+    And the response property "$.status" is 403
+    And the response property "$.code" is "CONSENT_INFO.INVALID_CALLBACK_URL"
     And the response property "$.message" contains a user friendly text
