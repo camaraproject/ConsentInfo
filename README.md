@@ -26,21 +26,25 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 * Describe, develop, document, and test the API(s)
 * Started: March 2025
 
+<!-- CAMARA:RELEASE-INFO:START -->
+<!-- The following section is automatically maintained by the CAMARA project-administration tooling: https://github.com/camaraproject/project-administration -->
+
 ## Release Information
 
-* Note: Please be aware that the project will have updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
-* `NEW`: Public release r1.2 of API version `0.1.0` is available [here](https://github.com/camaraproject/ConsentInfo/releases/tag/r1.2)
-  * API definition **with inline documentation**:
-    * [View it on ReDoc](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml&nocors)
-    * [View it on Swagger Editor](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml)
-    * OpenAPI [YAML spec file](https://github.com/camaraproject/ConsentInfo/blob/r1.2/code/API_definitions/consent-info.yaml)
-  * API additional [related documentation](https://github.com/camaraproject/ConsentInfo/tree/r1.2/documentation/API_documentation)
+> [!NOTE]
+> Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
-<!-- Optional: an explicit listing of the latest (pre-)release with additional information, e.g. links to the API definitions -->
-<!-- In addition use/uncomment one or multiple the following alternative options when becoming applicable -->
-* Pre-releases of this sub project are available in https://github.com/camaraproject/ConsentInfo/releases
-* The latest public release is available here: https://github.com/camaraproject/ConsentInfo/releases/latest
+* **NEW**: The latest public release is [r1.2](https://github.com/camaraproject/ConsentInfo/releases/tag/r1.2) (Fall25), with the following API versions:
+  * **consent-info v0.1.0**
+  [[YAML]](https://github.com/camaraproject/ConsentInfo/blob/r1.2/code/API_definitions/consent-info.yaml)
+  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml&nocors)
+  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml)
+* The latest public release is always available here: https://github.com/camaraproject/ConsentInfo/releases/latest
+* Other releases of this repository are available in https://github.com/camaraproject/ConsentInfo/releases
 * For changes see [CHANGELOG.md](https://github.com/camaraproject/ConsentInfo/blob/main/CHANGELOG.md)
+
+_The above section is automatically synchronized by CAMARA project-administration._
+<!-- CAMARA:RELEASE-INFO:END -->
 
 ## Contributing
 
