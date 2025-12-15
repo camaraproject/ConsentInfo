@@ -49,7 +49,7 @@ _The above section is automatically synchronized by CAMARA project-administratio
 ## Contributing
 
 * Meetings of the working group are held virtually
-  * Schedule: Bi-weekly, Wednesday, 4 PM CET/CEST (15:00 UTC, 14:00 UTC during European DST)
+  * Schedule: Every 2 weeks on Wednesdays at 14:00 UTC (IdentityAndConsentManagement Working Group meeting)
   * [Registration / Join](https://zoom-lfx.platform.linuxfoundation.org/meeting/94629188836?password=278b4c8a-f370-43bf-bac1-b30a39f169f3)
   * Minutes: Access [meeting minutes](https://lf-camaraproject.atlassian.net/wiki/x/lE7e)
 
