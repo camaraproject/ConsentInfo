@@ -30,7 +30,7 @@ The API definition(s) are based on
 
 ## consent-info v0.2.0-rc.1
 
-**consent-info v0.2.0-rc.1 is is the first release candidate of the version 0.2.0**
+**consent-info v0.2.0-rc.1 is the first release candidate of the version 0.2.0**
 
 consent-info API v0.2.0 introduces enhancements to improve user experience and clarity in consent management. Key updates include the addition of an optional `callbackUrl` parameter for redirecting users post-consent, refined status terminology replacing `REVOKED` with `DENIED`, and expanded test scenarios to ensure robust handling of new features.
   
@@ -41,7 +41,7 @@ consent-info API v0.2.0 introduces enhancements to improve user experience and c
 
 ### Added
 
-- Added support for an optional callbackUrl parameter in the consent capture request, allowing API Consumers to specify where the user should be redirected after completing the consent flow by @jpengar in https://github.com/camaraproject/ConsentInfo/pull/41
+- Added support for an optional `callbackUrl` parameter in the consent capture request, allowing API Consumers to specify where the user should be redirected after completing the consent flow by @jpengar in https://github.com/camaraproject/ConsentInfo/pull/41
 - Added error code `CONSENT_INFO.INVALID_CALLBACK_URL` and example for invalid callback URLs, ensuring that API Providers return a clear 403 error when the callback URL fails validation by @jpengar in https://github.com/camaraproject/ConsentInfo/pull/41
 - Included a new request example `ONE_SCOPE_CALLBACK_URL` demonstrating usage of the `callbackUrl field in API requests by @jpengar in https://github.com/camaraproject/ConsentInfo/pull/41
 - Added a new response example `CONSENT_DENIED` to illustrate how the API responds when consent is explicitly denied for a scope and purpose by @jpengar in https://github.com/camaraproject/ConsentInfo/pull/41
