@@ -43,6 +43,14 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 * Other releases of this repository are available in https://github.com/camaraproject/ConsentInfo/releases
 * For changes see [CHANGELOG.md](https://github.com/camaraproject/ConsentInfo/blob/main/CHANGELOG.md)
 
+### Upcoming Release Preview
+
+* Pre-release: [r2.1](https://github.com/camaraproject/ConsentInfo/releases/tag/r2.1) (release-candidate)
+  * **consent-info v0.2.0-rc.1**
+  [[YAML]](https://github.com/camaraproject/ConsentInfo/blob/r2.1/code/API_definitions/consent-info.yaml)
+  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r2.1/code/API_definitions/consent-info.yaml&nocors)
+  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r2.1/code/API_definitions/consent-info.yaml)
+
 _The above section is automatically synchronized by CAMARA project-administration._
 <!-- CAMARA:RELEASE-INFO:END -->
 
