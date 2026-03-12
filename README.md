@@ -24,9 +24,7 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
   
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 * Describe, develop, document, and test the API(s)
-* Started: March 2025
-
-<!-- CAMARA:RELEASE-INFO:START -->
+* Started: March 2025<!-- CAMARA:RELEASE-INFO:START -->
 <!-- The following section is automatically maintained by the CAMARA project-administration tooling: https://github.com/camaraproject/project-administration -->
 
 ## Release Information
@@ -35,6 +33,8 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 > Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
 * The latest public release is [r1.2](https://github.com/camaraproject/ConsentInfo/releases/tag/r1.2), with the following API versions:
+  * **consent-info 0.1.0**
+  [[YAML]](https://github.com/camaraproject/ConsentInfo/blob/r1.2/code/API_definitions/consent-info.yaml)  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml&nocors)  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml)
 
 * The latest public release is always available here: https://github.com/camaraproject/ConsentInfo/releases/latest
 * Other releases of this repository are available in https://github.com/camaraproject/ConsentInfo/releases
