@@ -84,8 +84,8 @@ This release contains the definition and documentation of
 * consent-info v0.2.0-rc.1
 
 The API definition(s) are based on
-* Commonalities r3.4
-* Identity and Consent Management r3.3
+* Commonalities 0.6.1
+* Identity and Consent Management 0.4.0
 
 ## consent-info v0.2.0-rc.1
 
