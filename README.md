@@ -24,7 +24,9 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
   
     Importantly, this API does NOT delegate Consent capture to the API Consumer but rather empowers the API Consumer to present the API Provider's Consent capture URL at the most opportune time and place. The actual Consent capture occurs within the API Provider's secure environment, ensuring the User's authentication with the API Provider.
 * Describe, develop, document, and test the API(s)
-* Started: March 2025<!-- CAMARA:RELEASE-INFO:START -->
+* Started: March 2025
+
+<!-- CAMARA:RELEASE-INFO:START -->
 <!-- The following section is automatically maintained by the CAMARA project-administration tooling: https://github.com/camaraproject/project-administration -->
 
 ## Release Information
