@@ -1,0 +1,13 @@
+repository:
+  repository_name: ConsentInfo
+  release_tag: r2.3
+  release_type: public-release
+  release_date: null
+  src_commit_sha: 7fba564095861bf91d380760e2b3479bf5e36d03
+apis:
+- api_name: consent-info
+  api_version: 0.2.0
+  api_title: Consent Info
+dependencies:
+  commonalities_release: r3.4 (0.6.1)
+  identity_consent_management_release: r3.3 (0.4.0)
