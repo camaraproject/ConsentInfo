@@ -75,7 +75,7 @@ consent-info API v0.2.0 introduces enhancements to improve user experience and c
 
 - N/A
 
-**Full Changelog**: https://github.com/camaraproject/ConsentInfo/compare/r2.2...r2.3
+**Full Changelog**: https://github.com/camaraproject/ConsentInfo/compare/r1.2...r2.3
 
 # r2.2
 
