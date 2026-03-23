@@ -2,7 +2,7 @@ repository:
   repository_name: ConsentInfo
   release_tag: r2.3
   release_type: public-release
-  release_date: null
+  release_date: '2026-03-23T12:56:53Z'
   src_commit_sha: 7fba564095861bf91d380760e2b3479bf5e36d03
 apis:
 - api_name: consent-info
