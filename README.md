@@ -34,20 +34,13 @@ Sandbox API Repository to describe, develop, document, and test the ConsentInfo 
 > [!NOTE]
 > Please be aware that the project will have frequent updates to the main branch. There are no compatibility guarantees associated with code in any branch, including main, until a new release is created. For example, changes may be reverted before a release is created. **For best results, use the latest available release**.
 
-* The latest public release is [r1.2](https://github.com/camaraproject/ConsentInfo/releases/tag/r1.2), with the following API versions:
-  * **consent-info 0.1.0**
-  [[YAML]](https://github.com/camaraproject/ConsentInfo/blob/r1.2/code/API_definitions/consent-info.yaml)  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml&nocors)  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r1.2/code/API_definitions/consent-info.yaml)
+* The latest public release is [r2.3](https://github.com/camaraproject/ConsentInfo/releases/tag/r2.3), with the following API versions:
+  * **consent-info 0.2.0**
+  [[YAML]](https://github.com/camaraproject/ConsentInfo/blob/r2.3/code/API_definitions/consent-info.yaml)  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r2.3/code/API_definitions/consent-info.yaml&nocors)  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r2.3/code/API_definitions/consent-info.yaml)
 
 * The latest public release is always available here: https://github.com/camaraproject/ConsentInfo/releases/latest
 * Other releases of this repository are available in https://github.com/camaraproject/ConsentInfo/releases
 * For changes see [CHANGELOG](https://github.com/camaraproject/ConsentInfo/tree/main/CHANGELOG)
-
-### Upcoming Release Preview
-
-* Pre-release: [r2.2](https://github.com/camaraproject/ConsentInfo/releases/tag/r2.2) (release candidate)
-  * **consent-info 0.2.0-rc.2**
-  [[YAML]](https://github.com/camaraproject/ConsentInfo/blob/r2.2/code/API_definitions/consent-info.yaml)  [[ReDoc]](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r2.2/code/API_definitions/consent-info.yaml&nocors)  [[Swagger]](https://camaraproject.github.io/swagger-ui/?url=https://raw.githubusercontent.com/camaraproject/ConsentInfo/r2.2/code/API_definitions/consent-info.yaml)
-
 
 _The above section is automatically synchronized by CAMARA project-administration._
 <!-- CAMARA:RELEASE-INFO:END -->
